@@ -12,12 +12,11 @@ namespace ChristianEssl\Impersonate\Hooks;
  *
  ***/
 
+use ChristianEssl\Impersonate\Utility\ConfigurationUtility;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
-use TYPO3\CMS\Lang\LanguageService;
 use TYPO3\CMS\Recordlist\RecordList\DatabaseRecordList;
 use TYPO3\CMS\Recordlist\RecordList\RecordListHookInterface;
 
@@ -107,7 +106,8 @@ class DatabaseRecordListHooks implements RecordListHookInterface
      */
     protected function addImpersonateButton(&$cells)
     {
-        $previewUrl = $this->getPreviewUrl();
+        $pageId = ConfigurationUtility::getRedirectPageId();
+        $previewUrl = $this->getPreviewUrl($pageId);
         $buttonText = $this->translate('button.impersonate');
 
         $button = '
@@ -122,13 +122,15 @@ class DatabaseRecordListHooks implements RecordListHookInterface
     }
 
     /**
+     * @param integer $pageId
+     *
      * @return string
      */
-    protected function getPreviewUrl()
+    protected function getPreviewUrl($pageId)
     {
         $switchFocus = true;
         return BackendUtility::getPreviewUrl(
-            1,
+            $pageId,
             '',
             null,
             '',

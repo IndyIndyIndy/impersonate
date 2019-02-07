@@ -1,3 +1,0 @@
-
-# cat=basic//; type=string; label=Ext configuration example
-exampleConfig =

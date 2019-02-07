@@ -1,0 +1,7 @@
+
+module.tx_impersonate {
+	settings {
+		# cat=module.tx_impersonate//a; type=int; label=Page to redirect to when impersonating a user
+		loginRedirectPid =
+	}
+}
