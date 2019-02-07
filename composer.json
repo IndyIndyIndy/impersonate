@@ -1,0 +1,35 @@
+{
+    "name": "christianessl/impersonate",
+    "type": "typo3-cms-extension",
+    "description": "Impersonate frontend users from inside the TYPO3 Backend.",
+    "keywords": [
+        "TYPO3",
+        "extension"
+    ],
+    "license": ["GPL-2.0-or-later"],
+    "homepage": "https://christianessl.at",
+    "authors": [
+        {
+            "name": "Christian Essl",
+            "role": "Developer"
+        }
+    ],
+    "version": "0.1.0",
+    "require": {
+        "typo3/cms-core": "^8.7.0|| ^9.5.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "ChristianEssl\\Impersonate\\": "Classes"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "ChristianEssl\\Impersonate\\Tests\\": "Tests"
+        }
+    },
+    "replace": {
+        "impersonate": "self.version",
+        "typo3-ter/impersonate": "self.version"
+    }
+}
