@@ -16,7 +16,9 @@ use ChristianEssl\Impersonate\Utility\ConfigurationUtility;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Imaging\IconFactory;
+use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 use TYPO3\CMS\Recordlist\RecordList\DatabaseRecordList;
 use TYPO3\CMS\Recordlist\RecordList\RecordListHookInterface;
 
@@ -66,7 +68,7 @@ class DatabaseRecordListHooks implements RecordListHookInterface
     public function makeControl($table, $row, $cells, &$parentObject)
     {
         if ($table === 'fe_users') {
-            $this->addImpersonateButton($cells);
+            $this->addImpersonateButton($cells, $row);
         }
         return $cells;
     }
@@ -103,19 +105,29 @@ class DatabaseRecordListHooks implements RecordListHookInterface
 
     /**
      * @param array $cells
+     * @param array $userRow
      */
-    protected function addImpersonateButton(&$cells)
+    protected function addImpersonateButton(&$cells, $userRow)
     {
+        //@todo refactor
+
+        $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
+        $pageRenderer->loadRequireJsModule('TYPO3/CMS/Impersonate/ImpersonateButton', 'function(ImpersonateButton) {
+			ImpersonateButton.init();
+		}');
+
+        $userId = $userRow['uid'];
         $pageId = ConfigurationUtility::getRedirectPageId();
         $previewUrl = $this->getPreviewUrl($pageId);
         $buttonText = $this->translate('button.impersonate');
+        $iconMarkup = $this->iconFactory->getIcon('actions-system-backend-user-switch', Icon::SIZE_SMALL)->render();
 
         $button = '
-            <a class="btn btn-default" href="'.$previewUrl.'" target="_blank" title="'.$buttonText.'">
-                <span   class="t3js-icon icon icon-size-small icon-state-default icon-actions-edit-copy" 
-                        data-identifier="actions-edit-copy">
-	                '.$this->iconFactory->getIcon('actions-system-backend-user-switch', Icon::SIZE_SMALL)->render().'	
-                </span>
+            <a  class="btn btn-default t3-impersonate-button" 
+                data-uid="'.$userId.'"
+                href="'.$previewUrl.'" target="_blank" 
+                title="'.$buttonText.'">
+	                '.$iconMarkup.'	
             </a>';
 
         $cells['impersonate'] = $button;

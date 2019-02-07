@@ -23,7 +23,6 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
  */
 class ConfigurationUtility
 {
-
     public static function getRedirectPageId()
     {
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
