@@ -18,7 +18,6 @@ use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 use TYPO3\CMS\Recordlist\RecordList\DatabaseRecordList;
 use TYPO3\CMS\Recordlist\RecordList\RecordListHookInterface;
 
@@ -31,6 +30,11 @@ class DatabaseRecordListHooks implements RecordListHookInterface
      * @var IconFactory
      */
     protected $iconFactory;
+
+    /**
+     * @var bool
+     */
+    protected static $buttonJavasScriptLoaded = false;
 
     /**
      * Constructor
@@ -69,6 +73,7 @@ class DatabaseRecordListHooks implements RecordListHookInterface
     {
         if ($table === 'fe_users') {
             $this->addImpersonateButton($cells, $row);
+            $this->loadImpersonateButtonJavaScript();
         }
         return $cells;
     }
@@ -109,13 +114,6 @@ class DatabaseRecordListHooks implements RecordListHookInterface
      */
     protected function addImpersonateButton(&$cells, $userRow)
     {
-        //@todo refactor
-
-        $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
-        $pageRenderer->loadRequireJsModule('TYPO3/CMS/Impersonate/ImpersonateButton', 'function(ImpersonateButton) {
-			ImpersonateButton.init();
-		}');
-
         $userId = $userRow['uid'];
         $pageId = ConfigurationUtility::getRedirectPageId();
         $previewUrl = $this->getPreviewUrl($pageId);
@@ -131,6 +129,20 @@ class DatabaseRecordListHooks implements RecordListHookInterface
             </a>';
 
         $cells['impersonate'] = $button;
+    }
+
+    /**
+     * Load the ImpersonateButton javascript
+     */
+    protected function loadImpersonateButtonJavaScript()
+    {
+        if (!self::$buttonJavasScriptLoaded) {
+            $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
+            $pageRenderer->loadRequireJsModule('TYPO3/CMS/Impersonate/ImpersonateButton', 'function(ImpersonateButton) {
+                ImpersonateButton.init();
+            }');
+            self::$buttonJavasScriptLoaded = true;
+        }
     }
 
     /**

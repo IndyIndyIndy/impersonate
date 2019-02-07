@@ -1,4 +1,6 @@
-<?php /** @noinspection PhpUndefinedVariableInspection */
+<?php
+/** @noinspection PhpUnusedParameterInspection */
+/** @noinspection PhpUndefinedVariableInspection */
 
 defined('TYPO3_MODE') || die('Access denied.');
 

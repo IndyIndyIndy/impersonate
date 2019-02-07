@@ -14,7 +14,6 @@ namespace ChristianEssl\Impersonate\Controller;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /**
  * Handles logging in a frontend user with the given uid

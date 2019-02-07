@@ -10,3 +10,4 @@ WORK IN PROGRESS
 - similar to adminpanels frontendgroup simulation, but with specific users
 - refactoring
 - readme
+- ext_icon
