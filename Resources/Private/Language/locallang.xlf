@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.0">
+    <file source-language="en" datatype="plaintext" original="messages" date="2019-02-04T18:44:00Z" product-name="impersonate">
+        <header/>
+        <body>
+            <trans-unit id="button.impersonate">
+                <source>Impersonate User</source>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>
