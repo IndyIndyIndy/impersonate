@@ -12,12 +12,11 @@ namespace ChristianEssl\Impersonate\Hooks;
  *
  ***/
 
-use ChristianEssl\Impersonate\Utility\ConfigurationUtility;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Imaging\IconFactory;
-use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Recordlist\RecordList\DatabaseRecordList;
 use TYPO3\CMS\Recordlist\RecordList\RecordListHookInterface;
 
@@ -68,12 +67,12 @@ class DatabaseRecordListHooks implements RecordListHookInterface
      * @param object $parentObject Instance of calling object
      *
      * @return array The modified control-icons
+     * @throws \TYPO3\CMS\Backend\Routing\Exception\RouteNotFoundException
      */
     public function makeControl($table, $row, $cells, &$parentObject)
     {
         if ($table === 'fe_users') {
             $this->addImpersonateButton($cells, $row);
-            $this->loadImpersonateButtonJavaScript();
         }
         return $cells;
     }
@@ -111,19 +110,20 @@ class DatabaseRecordListHooks implements RecordListHookInterface
     /**
      * @param array $cells
      * @param array $userRow
+     *
+     * @throws \TYPO3\CMS\Backend\Routing\Exception\RouteNotFoundException
      */
     protected function addImpersonateButton(&$cells, $userRow)
     {
         $userId = $userRow['uid'];
-        $pageId = ConfigurationUtility::getRedirectPageId();
-        $previewUrl = $this->getPreviewUrl($pageId);
+        $uri = $this->buildFrontendLoginUri($userId);
+
         $buttonText = $this->translate('button.impersonate');
         $iconMarkup = $this->iconFactory->getIcon('actions-system-backend-user-switch', Icon::SIZE_SMALL)->render();
 
         $button = '
             <a  class="btn btn-default t3-impersonate-button" 
-                data-uid="'.$userId.'"
-                href="'.$previewUrl.'" target="_blank" 
+                href="'.$uri.'" target="_blank" 
                 title="'.$buttonText.'">
 	                '.$iconMarkup.'	
             </a>';
@@ -132,36 +132,16 @@ class DatabaseRecordListHooks implements RecordListHookInterface
     }
 
     /**
-     * Load the ImpersonateButton javascript
-     */
-    protected function loadImpersonateButtonJavaScript()
-    {
-        if (!self::$buttonJavasScriptLoaded) {
-            $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
-            $pageRenderer->loadRequireJsModule('TYPO3/CMS/Impersonate/ImpersonateButton', 'function(ImpersonateButton) {
-                ImpersonateButton.init();
-            }');
-            self::$buttonJavasScriptLoaded = true;
-        }
-    }
-
-    /**
-     * @param integer $pageId
+     * @param $userId
      *
      * @return string
+     * @throws \TYPO3\CMS\Backend\Routing\Exception\RouteNotFoundException
      */
-    protected function getPreviewUrl($pageId)
+    protected function buildFrontendLoginUri($userId)
     {
-        $switchFocus = true;
-        return BackendUtility::getPreviewUrl(
-            $pageId,
-            '',
-            null,
-            '',
-            '',
-            '',
-            $switchFocus
-        );
+        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        $uriBuilder = $objectManager->get(UriBuilder::class);
+        return (string)$uriBuilder->buildUriFromRoute('impersonate_frontendlogin', ['uid' => $userId]);
     }
 
     /**

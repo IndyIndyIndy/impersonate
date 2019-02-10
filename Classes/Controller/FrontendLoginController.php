@@ -12,8 +12,12 @@ namespace ChristianEssl\Impersonate\Controller;
  *
  ***/
 
+use ChristianEssl\Impersonate\Exception\NoUserIdException;
+use ChristianEssl\Impersonate\Utility\ConfigurationUtility;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Http\RedirectResponse;
 
 /**
  * Handles logging in a frontend user with the given uid
@@ -24,23 +28,40 @@ class FrontendLoginController
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
      *
-     * @return ResponseInterface
+     * @return RedirectResponse
+     * @throws NoUserIdException
      */
     public function loginAction(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
         // @todo do login
-        $uid = (int) $request->getParsedBody()['uid'];
+        $uid = (int) $request->getQueryParams()['uid'];
 
         if (!empty($uid)) {
-            $response->getBody()->write(json_encode([
-                'response' => true
-            ]));
-            return $response;
+            $pageId = ConfigurationUtility::getRedirectPageId();
+            $previewUrl = $this->getPreviewUrl($pageId);
+            return new RedirectResponse($previewUrl);
         }
-        $response->getBody()->write(json_encode([
-            'error' => 'TODO'
-        ]));
-        return $response;
+
+        throw new NoUserIdException();
+    }
+
+    /**
+     * @param integer $pageId
+     *
+     * @return string
+     */
+    protected function getPreviewUrl($pageId)
+    {
+        $switchFocus = true;
+        return BackendUtility::getPreviewUrl(
+            $pageId,
+            '',
+            null,
+            '',
+            '',
+            '',
+            $switchFocus
+        );
     }
 
 }
