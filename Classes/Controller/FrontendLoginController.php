@@ -15,13 +15,14 @@ namespace ChristianEssl\Impersonate\Controller;
 use ChristianEssl\Impersonate\Authentication\FrontendUserAuthenticator;
 use ChristianEssl\Impersonate\Exception\NoUserIdException;
 use ChristianEssl\Impersonate\Utility\ConfigurationUtility;
+use ChristianEssl\Impersonate\Utility\PreviewUrlUtility;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Error\Http\ServiceUnavailableException;
 use TYPO3\CMS\Core\Error\Http\UnauthorizedException;
 use TYPO3\CMS\Core\Http\RedirectResponse;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 
 /**
  * Handles logging in a frontend user with the given uid
@@ -44,11 +45,17 @@ class FrontendLoginController
         if (!empty($uid)) {
             $this->authenticateFrontendUser($uid);
             $pageId = ConfigurationUtility::getRedirectPageId();
-            $previewUrl = $this->getPreviewUrl($pageId);
-            return new RedirectResponse($previewUrl);
+            $previewUrl = PreviewUrlUtility::getPreviewUrl($pageId);
+
+            if (VersionNumberUtility::convertVersionNumberToInteger(TYPO3_version) >= 9000000) {
+                return new RedirectResponse($previewUrl);
+            } else {
+                header('Location: ' . $previewUrl);
+                exit;
+            }
         }
 
-        throw new NoUserIdException();
+        throw new NoUserIdException('No user was given.');
     }
 
     /**
@@ -61,25 +68,6 @@ class FrontendLoginController
     {
         $frontendUserAuthenticator = GeneralUtility::makeInstance(FrontendUserAuthenticator::class);
         $frontendUserAuthenticator->authenticate($uid);
-    }
-
-    /**
-     * @param integer $pageId
-     *
-     * @return string
-     */
-    protected function getPreviewUrl($pageId)
-    {
-        $switchFocus = true;
-        return BackendUtility::getPreviewUrl(
-            $pageId,
-            '',
-            null,
-            '',
-            '',
-            '',
-            $switchFocus
-        );
     }
 
 }

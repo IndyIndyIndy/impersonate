@@ -18,6 +18,7 @@ use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Error\Http\ServiceUnavailableException;
 use TYPO3\CMS\Core\Error\Http\UnauthorizedException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
@@ -53,7 +54,11 @@ class FrontendUserAuthenticator
     {
         $rootPageId = ConfigurationUtility::getRootPageId();
         $GLOBALS['TSFE'] = new TypoScriptFrontendController(null, $rootPageId, 0);
-        $GLOBALS['TSFE']->setLogger(new NullLogger());
+
+        if (VersionNumberUtility::convertVersionNumberToInteger(TYPO3_version) >= 9000000) {
+            $GLOBALS['TSFE']->setLogger(new NullLogger());
+        }
+
         $GLOBALS['TSFE']->connectToDB();
         $GLOBALS['TSFE']->initFEuser();
     }
