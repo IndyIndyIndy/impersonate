@@ -40,7 +40,6 @@ class FrontendUserAuthenticator
         }
         $this->buildTSFE();
         $this->loginFrontendUser($uid);
-        $this->loginFrontendUser($uid);
     }
 
     /**
