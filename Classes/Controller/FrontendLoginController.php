@@ -19,6 +19,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Error\Http\ServiceUnavailableException;
+use TYPO3\CMS\Core\Error\Http\UnauthorizedException;
 use TYPO3\CMS\Core\Http\RedirectResponse;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -34,6 +35,7 @@ class FrontendLoginController
      * @return RedirectResponse
      * @throws NoUserIdException
      * @throws ServiceUnavailableException
+     * @throws UnauthorizedException
      */
     public function loginAction(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
@@ -53,6 +55,7 @@ class FrontendLoginController
      * @param integer $uid
      *
      * @throws ServiceUnavailableException
+     * @throws UnauthorizedException
      */
     protected function authenticateFrontendUser($uid)
     {

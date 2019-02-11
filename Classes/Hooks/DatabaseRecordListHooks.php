@@ -13,6 +13,7 @@ namespace ChristianEssl\Impersonate\Hooks;
  ***/
 
 use TYPO3\CMS\Backend\Routing\UriBuilder;
+use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -71,7 +72,7 @@ class DatabaseRecordListHooks implements RecordListHookInterface
      */
     public function makeControl($table, $row, $cells, &$parentObject)
     {
-        if ($table === 'fe_users') {
+        if ($this->isButtonPlacementAllowed($table)) {
             $this->addImpersonateButton($cells, $row);
         }
         return $cells;
@@ -142,6 +143,18 @@ class DatabaseRecordListHooks implements RecordListHookInterface
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         $uriBuilder = $objectManager->get(UriBuilder::class);
         return (string)$uriBuilder->buildUriFromRoute('impersonate_frontendlogin', ['uid' => $userId]);
+    }
+
+    /**
+     * @param string $table
+     *
+     * @return bool
+     */
+    protected function isButtonPlacementAllowed($table)
+    {
+        return $table === 'fe_users' &&
+            $GLOBALS['BE_USER'] instanceof BackendUserAuthentication &&
+            $GLOBALS['BE_USER']->isAdmin();
     }
 
     /**

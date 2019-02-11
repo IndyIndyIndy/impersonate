@@ -14,6 +14,9 @@ namespace ChristianEssl\Impersonate\Authentication;
 
 use ChristianEssl\Impersonate\Utility\ConfigurationUtility;
 use Psr\Log\NullLogger;
+use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
+use TYPO3\CMS\Core\Error\Http\ServiceUnavailableException;
+use TYPO3\CMS\Core\Error\Http\UnauthorizedException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
@@ -26,10 +29,14 @@ class FrontendUserAuthenticator
 
     /**
      * @param integer $uid
-     * @throws \TYPO3\CMS\Core\Error\Http\ServiceUnavailableException
+     * @throws ServiceUnavailableException
+     * @throws UnauthorizedException
      */
     public function authenticate($uid)
     {
+        if (!$this->isAdminUserLoggedIn()) {
+            throw new UnauthorizedException('Missing backend administrator authentication.');
+        }
         $this->buildTSFE();
         $this->loginFrontendUser($uid);
         $this->loginFrontendUser($uid);
@@ -40,7 +47,7 @@ class FrontendUserAuthenticator
      * Initializing the TypoScriptFrontendController this way is deprecated, but the new
      * TypoScriptFrontendInitialization middleware is not production ready yet - fix this in TYPO3 10
      *
-     * @throws \TYPO3\CMS\Core\Error\Http\ServiceUnavailableException
+     * @throws ServiceUnavailableException
      */
     protected function buildTSFE()
     {
@@ -111,5 +118,14 @@ class FrontendUserAuthenticator
             }
         }
         return $result;
+    }
+
+    /**
+     * @return bool
+     */
+    protected function isAdminUserLoggedIn()
+    {
+        return $GLOBALS['BE_USER'] instanceof BackendUserAuthentication &&
+            $GLOBALS['BE_USER']->isAdmin();
     }
 }

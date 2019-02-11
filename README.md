@@ -5,8 +5,6 @@ WORK IN PROGRESS
 
 @TODO:
 - support for TYPO3 8.7
-- double check belogin in login process
-- similar to adminpanels frontendgroup simulation, but with specific users
 - refactoring
 - readme
 - ext_icon
