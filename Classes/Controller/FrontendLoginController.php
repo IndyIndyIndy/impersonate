@@ -13,13 +13,13 @@ namespace ChristianEssl\Impersonate\Controller;
  ***/
 
 use ChristianEssl\Impersonate\Authentication\FrontendUserAuthenticator;
+use ChristianEssl\Impersonate\Exception\NoAdminUserException;
 use ChristianEssl\Impersonate\Exception\NoUserIdException;
 use ChristianEssl\Impersonate\Utility\ConfigurationUtility;
 use ChristianEssl\Impersonate\Utility\PreviewUrlUtility;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Error\Http\ServiceUnavailableException;
-use TYPO3\CMS\Core\Error\Http\UnauthorizedException;
 use TYPO3\CMS\Core\Http\RedirectResponse;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\VersionNumberUtility;
@@ -36,7 +36,7 @@ class FrontendLoginController
      * @return RedirectResponse
      * @throws NoUserIdException
      * @throws ServiceUnavailableException
-     * @throws UnauthorizedException
+     * @throws NoAdminUserException
      */
     public function loginAction(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
@@ -62,7 +62,7 @@ class FrontendLoginController
      * @param integer $uid
      *
      * @throws ServiceUnavailableException
-     * @throws UnauthorizedException
+     * @throws NoAdminUserException
      */
     protected function authenticateFrontendUser($uid)
     {

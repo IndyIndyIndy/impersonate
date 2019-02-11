@@ -12,11 +12,11 @@ namespace ChristianEssl\Impersonate\Authentication;
  *
  ***/
 
+use ChristianEssl\Impersonate\Exception\NoAdminUserException;
 use ChristianEssl\Impersonate\Utility\ConfigurationUtility;
 use Psr\Log\NullLogger;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Error\Http\ServiceUnavailableException;
-use TYPO3\CMS\Core\Error\Http\UnauthorizedException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
@@ -31,12 +31,12 @@ class FrontendUserAuthenticator
     /**
      * @param integer $uid
      * @throws ServiceUnavailableException
-     * @throws UnauthorizedException
+     * @throws NoAdminUserException
      */
     public function authenticate($uid)
     {
         if (!$this->isAdminUserLoggedIn()) {
-            throw new UnauthorizedException('Missing backend administrator authentication.');
+            throw new NoAdminUserException('Missing backend administrator authentication.');
         }
         $this->buildTSFE();
         $this->loginFrontendUser($uid);
