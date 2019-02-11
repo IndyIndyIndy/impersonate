@@ -51,7 +51,7 @@ class ConfigurationUtility
     /**
      * @return integer
      */
-    protected static function getRootPageId()
+    public static function getRootPageId()
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('pages');

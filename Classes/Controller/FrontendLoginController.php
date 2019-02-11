@@ -12,12 +12,15 @@ namespace ChristianEssl\Impersonate\Controller;
  *
  ***/
 
+use ChristianEssl\Impersonate\Authentication\FrontendUserAuthenticator;
 use ChristianEssl\Impersonate\Exception\NoUserIdException;
 use ChristianEssl\Impersonate\Utility\ConfigurationUtility;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Error\Http\ServiceUnavailableException;
 use TYPO3\CMS\Core\Http\RedirectResponse;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Handles logging in a frontend user with the given uid
@@ -30,19 +33,31 @@ class FrontendLoginController
      *
      * @return RedirectResponse
      * @throws NoUserIdException
+     * @throws ServiceUnavailableException
      */
     public function loginAction(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
-        // @todo do login
         $uid = (int) $request->getQueryParams()['uid'];
 
         if (!empty($uid)) {
+            $this->authenticateFrontendUser($uid);
             $pageId = ConfigurationUtility::getRedirectPageId();
             $previewUrl = $this->getPreviewUrl($pageId);
             return new RedirectResponse($previewUrl);
         }
 
         throw new NoUserIdException();
+    }
+
+    /**
+     * @param integer $uid
+     *
+     * @throws ServiceUnavailableException
+     */
+    protected function authenticateFrontendUser($uid)
+    {
+        $frontendUserAuthenticator = GeneralUtility::makeInstance(FrontendUserAuthenticator::class);
+        $frontendUserAuthenticator->authenticate($uid);
     }
 
     /**
