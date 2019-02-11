@@ -6,6 +6,9 @@
             <trans-unit id="button.impersonate">
                 <source>Impersonate User</source>
             </trans-unit>
+            <trans-unit id="constants.loginRedirectPid">
+                <source>Page to redirect to when impersonating a user</source>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -1,8 +1,7 @@
 
 module.tx_impersonate {
 	settings {
-		//@todo translate this
-		# cat=module.tx_impersonate//a; type=int; label=Page to redirect to when impersonating a user
+		# cat=module.tx_impersonate//a; type=int; label=LLL:EXT:impersonate/Resources/Private/Language/locallang.xlf:constants.loginRedirectPid
 		loginRedirectPid =
 	}
 }
