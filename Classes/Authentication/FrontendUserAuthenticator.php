@@ -70,7 +70,6 @@ class FrontendUserAuthenticator
         $GLOBALS['TSFE']->fe_user->createUserSession(['uid' => $uid]);
         $GLOBALS['TSFE']->fe_user->user = $GLOBALS['TSFE']->fe_user->fetchUserSession();
         $GLOBALS['TSFE']->fe_user->fetchGroupData();
-        $GLOBALS['TSFE']->loginUser = true;
         $GLOBALS['TSFE']->fe_user->forceSetCookie = false;
         $GLOBALS['TSFE']->fe_user->setAndSaveSessionData('Authenticated via impersonate extension', true);
         $this->setSessionCookie($GLOBALS['TSFE']->fe_user);
