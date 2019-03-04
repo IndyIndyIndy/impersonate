@@ -1,6 +1,11 @@
 # TYPO3 Extension "impersonate"
 Impersonate frontend users from inside the TYPO3 Backend.
 
+[![Latest Stable Version](https://poser.pugx.org/christianessl/impersonate/v/stable)](https://packagist.org/packages/christianessl/impersonate)
+[![Total Downloads](https://poser.pugx.org/christianessl/impersonate/downloads)](https://packagist.org/packages/christianessl/impersonate)
+[![Latest Unstable Version](https://poser.pugx.org/christianessl/impersonate/v/unstable)](https://packagist.org/packages/christianessl/impersonate)
+[![License](https://poser.pugx.org/christianessl/impersonate/license)](https://packagist.org/packages/christianessl/impersonate)
+
 ## What does it do?
 
 This extension gives backend users with administrator privileges the possibility to authenticate as any specific 
