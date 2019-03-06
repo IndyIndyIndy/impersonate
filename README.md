@@ -1,6 +1,7 @@
 # TYPO3 Extension "impersonate"
 Impersonate frontend users from inside the TYPO3 Backend.
 
+[![Code Climate](https://codeclimate.com/github/IndyIndyIndy/impersonate.svg)](https://codeclimate.com/github/IndyIndyIndy/impersonate)
 [![Latest Stable Version](https://poser.pugx.org/christianessl/impersonate/v/stable)](https://packagist.org/packages/christianessl/impersonate)
 [![Total Downloads](https://poser.pugx.org/christianessl/impersonate/downloads)](https://packagist.org/packages/christianessl/impersonate)
 [![Latest Unstable Version](https://poser.pugx.org/christianessl/impersonate/v/unstable)](https://packagist.org/packages/christianessl/impersonate)
