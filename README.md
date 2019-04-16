@@ -10,7 +10,10 @@ Impersonate frontend users from inside the TYPO3 Backend.
 ## What does it do?
 
 This extension gives backend users with administrator privileges the possibility to authenticate as any specific 
-frontend user in the frontend with just a single click from inside the backend.
+frontend user in the frontend with just a single click from inside the backend. This **does not include** default backend users.
+
+
+And remember: *With great power comes great responsibility*. The purpose of this extension is mainly to allow for a tech support login as a specific user and see potential problems and bugs from the perspective of the user and do tech support actions as the specific user account.
 
 ![Screenshot](/Resources/Public/Screenshots/impersonate.png)
 
