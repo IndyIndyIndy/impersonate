@@ -66,7 +66,8 @@ class FrontendLoginController
      */
     protected function authenticateFrontendUser($uid)
     {
-        $frontendUserAuthenticator = GeneralUtility::makeInstance(FrontendUserAuthenticator::class);
+        $objectManager = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Object\ObjectManager::class);
+        $frontendUserAuthenticator = $objectManager->get(FrontendUserAuthenticator::class);
         $frontendUserAuthenticator->authenticate($uid);
     }
 
