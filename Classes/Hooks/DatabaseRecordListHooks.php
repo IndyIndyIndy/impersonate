@@ -12,12 +12,10 @@ namespace ChristianEssl\Impersonate\Hooks;
  *
  ***/
 
-use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Recordlist\RecordList\DatabaseRecordList;
 use TYPO3\CMS\Recordlist\RecordList\RecordListHookInterface;
 
@@ -117,32 +115,18 @@ class DatabaseRecordListHooks implements RecordListHookInterface
     protected function addImpersonateButton(&$cells, $userRow)
     {
         $userId = $userRow['uid'];
-        $uri = $this->buildFrontendLoginUri($userId);
 
         $buttonText = $this->translate('button.impersonate');
         $iconMarkup = $this->iconFactory->getIcon('actions-system-backend-user-switch', Icon::SIZE_SMALL)->render();
 
         $button = '
             <a  class="btn btn-default t3-impersonate-button" 
-                href="'.$uri.'" target="_blank" 
+                href="/?type=1603966087&tx_impersonate_login[user]='.$userId.'" target="_blank" 
                 title="'.$buttonText.'">
 	                '.$iconMarkup.'	
             </a>';
 
         $cells['impersonate'] = $button;
-    }
-
-    /**
-     * @param $userId
-     *
-     * @return string
-     * @throws \TYPO3\CMS\Backend\Routing\Exception\RouteNotFoundException
-     */
-    protected function buildFrontendLoginUri($userId)
-    {
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $uriBuilder = $objectManager->get(UriBuilder::class);
-        return (string)$uriBuilder->buildUriFromRoute('impersonate_frontendlogin', ['uid' => $userId]);
     }
 
     /**

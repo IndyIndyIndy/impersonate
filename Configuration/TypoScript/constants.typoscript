@@ -1,5 +1,5 @@
 
-module.tx_impersonate {
+plugin.tx_impersonate_login {
 	settings {
 		# cat=module.tx_impersonate//a; type=int; label=LLL:EXT:impersonate/Resources/Private/Language/locallang.xlf:constants.loginRedirectPid
 		loginRedirectPid =
