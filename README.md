@@ -19,7 +19,7 @@ And remember: *With great power comes great responsibility*. The purpose of this
 
 ## Requirements
 
-Currently supports TYPO3 8.7 and 9.5 LTS.
+Currently supports TYPO3 9.5 and 10.4 LTS.
 
 ## 1. Installation
 
@@ -34,12 +34,23 @@ Open the TYPO3 Extension Manager, search for `impersonate` and install the exten
 ## 2. Configuration
 
 - Go to the template module in the backend and include the `Impersonate` template to your main TypoScript template.
-- Now open the Constant Editor, choose `module.tx_impersonate` and set the id of the 
+- Now open the Constant Editor, choose `plugin.tx_impersonate_login` and set the id of the 
 target page to redirect an admin to when logging in a feuser via the backend:
-    - `module.tx_impersonate.settings.loginRedirectPid = #uid of your target page`
+    - `plugin.tx_impersonate_login.settings.loginRedirectPid = #uid of your target page`
 
 ## 3. Usage
 
 - Go to the list module as a backend user with administrator privileges, open a page / sysfolder with frontend user 
 records and click the "Impersonate user" button.
 - Voila! You are now logged in as the chosen frontend user.
+
+## 4. Upgrade
+
+### Upgrade from Version 1.0.0. to 2.0.0
+
+- Go to the template module
+- Open the Constant Editor, choose `plugin.tx_impersonate_login` and set the id of the 
+  target page to redirect an admin to when logging in a feuser via the backend.
+
+These steps are needed, because the constant `module.tx_impersonate.settings.loginRedirectPid` was changed to
+`plugin.tx_impersonate_login.settings.loginRedirectPid`.
