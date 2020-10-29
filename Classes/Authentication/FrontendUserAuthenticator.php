@@ -14,13 +14,10 @@ namespace ChristianEssl\Impersonate\Authentication;
 
 use ChristianEssl\Impersonate\Exception\NoAdminUserException;
 use ChristianEssl\Impersonate\Utility\ConfigurationUtility;
-use Psr\Log\NullLogger;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Error\Http\ServiceUnavailableException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * Logs in a frontend user without a password - use with care!
@@ -38,28 +35,8 @@ class FrontendUserAuthenticator
         if (!$this->isAdminUserLoggedIn()) {
             throw new NoAdminUserException('Missing backend administrator authentication.');
         }
-        $this->buildTSFE();
+
         $this->loginFrontendUser($uid);
-    }
-
-    /**
-     * @todo: fix this for TYPO3 10
-     * Initializing the TypoScriptFrontendController this way is deprecated, but the new
-     * TypoScriptFrontendInitialization middleware is not production ready yet - fix this in TYPO3 10
-     *
-     * @throws ServiceUnavailableException
-     */
-    protected function buildTSFE()
-    {
-        $rootPageId = ConfigurationUtility::getRootPageId();
-        $GLOBALS['TSFE'] = new TypoScriptFrontendController(null, $rootPageId, 0);
-
-        if (VersionNumberUtility::convertVersionNumberToInteger(TYPO3_version) >= 9000000) {
-            $GLOBALS['TSFE']->setLogger(new NullLogger());
-        }
-
-        $GLOBALS['TSFE']->connectToDB();
-        $GLOBALS['TSFE']->initFEuser();
     }
 
     /**

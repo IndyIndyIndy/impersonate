@@ -1,0 +1,38 @@
+
+plugin.tx_impersonate_login {
+	settings {
+		loginRedirectPid = {$plugin.tx_impersonate_login.settings.loginRedirectPid}
+	}
+}
+
+
+impersonate = PAGE
+impersonate  {
+	typeNum = 1603966087
+	config {
+		no_cache = 1
+		disableAllHeaderCode = 1
+		disablePrefixComment = 1
+		xhtml_cleaning = 0
+		admPanel = 0
+		debug = 0
+	}
+
+	10 = USER
+	10 {
+		userFunc = TYPO3\CMS\Extbase\Core\Bootstrap->run
+		extensionName = Impersonate
+		pluginName = Login
+		vendorName = ChristianEssl
+		controller = FrontendLogin
+
+		switchableControllerActions {
+			FrontendLogin {
+				1 = login
+			}
+		}
+
+		// since we don't have a cHash, deactivate it.
+		features.requireCHashArgumentForActionArguments = 0
+	}
+}

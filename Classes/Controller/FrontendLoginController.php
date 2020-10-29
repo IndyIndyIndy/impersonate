@@ -15,59 +15,54 @@ namespace ChristianEssl\Impersonate\Controller;
 use ChristianEssl\Impersonate\Authentication\FrontendUserAuthenticator;
 use ChristianEssl\Impersonate\Exception\NoAdminUserException;
 use ChristianEssl\Impersonate\Exception\NoUserIdException;
-use ChristianEssl\Impersonate\Utility\ConfigurationUtility;
 use ChristianEssl\Impersonate\Utility\PreviewUrlUtility;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Error\Http\ServiceUnavailableException;
-use TYPO3\CMS\Core\Http\RedirectResponse;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\VersionNumberUtility;
+use TYPO3\CMS\Extbase\Domain\Model\FrontendUser;
+use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
 /**
  * Handles logging in a frontend user with the given uid
  */
-class FrontendLoginController
+class FrontendLoginController extends ActionController
 {
     /**
-     * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
+     * @param FrontendUser $user
      *
-     * @return RedirectResponse
+     * @throws NoAdminUserException
      * @throws NoUserIdException
      * @throws ServiceUnavailableException
-     * @throws NoAdminUserException
+     * @throws \TYPO3\CMS\Extbase\Mvc\Exception\StopActionException
      */
-    public function loginAction(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+    public function loginAction(FrontendUser $user)
     {
-        $uid = (int) $request->getQueryParams()['uid'];
+        if ($user) {
+            $this->authenticateFrontendUser($user);
 
-        if (!empty($uid)) {
-            $this->authenticateFrontendUser($uid);
-            $pageId = ConfigurationUtility::getRedirectPageId();
-            $previewUrl = PreviewUrlUtility::getPreviewUrl($pageId);
-
-            if (VersionNumberUtility::convertVersionNumberToInteger(TYPO3_version) >= 9000000) {
-                return new RedirectResponse($previewUrl);
-            } else {
-                header('Location: ' . $previewUrl);
-                exit;
+            if (
+                isset($this->settings['loginRedirectPid']) &&
+                $this->settings['loginRedirectPid'] > 0
+            ) {
+                $previewUrl = PreviewUrlUtility::getPreviewUrl((int)$this->settings['loginRedirectPid']);
+                $this->redirectToUri($previewUrl);
             }
+
+            $this->redirectToUri('/');
         }
 
         throw new NoUserIdException('No user was given.');
     }
 
     /**
-     * @param integer $uid
+     * @param FrontendUser $user
      *
      * @throws ServiceUnavailableException
      * @throws NoAdminUserException
      */
-    protected function authenticateFrontendUser($uid)
+    protected function authenticateFrontendUser($user)
     {
         $frontendUserAuthenticator = GeneralUtility::makeInstance(FrontendUserAuthenticator::class);
-        $frontendUserAuthenticator->authenticate($uid);
+        $frontendUserAuthenticator->authenticate($user->getUid());
     }
 
 }
