@@ -31,14 +31,13 @@ class FrontendLoginController
 {
     /**
      * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
      *
      * @return RedirectResponse
      * @throws NoUserIdException
      * @throws ServiceUnavailableException
      * @throws NoAdminUserException
      */
-    public function loginAction(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+    public function loginAction(ServerRequestInterface $request): ResponseInterface
     {
         $uid = (int) $request->getQueryParams()['uid'];
 
