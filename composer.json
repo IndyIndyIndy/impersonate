@@ -29,7 +29,6 @@
         }
     },
     "replace": {
-        "impersonate": "self.version",
         "typo3-ter/impersonate": "self.version"
     }
 }
