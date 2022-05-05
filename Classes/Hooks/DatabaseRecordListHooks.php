@@ -124,7 +124,7 @@ class DatabaseRecordListHooks implements RecordListHookInterface
 
         $button = '
             <a  class="btn btn-default t3-impersonate-button" 
-                href="'.$uri.'" target="_blank" 
+                href="'.$uri.'" target="newTYPO3frontendWindow" 
                 title="'.$buttonText.'">
 	                '.$iconMarkup.'	
             </a>';
