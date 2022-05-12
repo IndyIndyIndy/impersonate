@@ -28,19 +28,6 @@ class RecordListRecordActionsListener
 {
 
     /**
-     * @var IconFactory
-     */
-    protected $iconFactory;
-
-    /**
-     * Constructor
-     */
-    public function __construct(IconFactory $iconFactory)
-    {
-        $this->iconFactory = $iconFactory;
-    }
-
-    /**
      * @param ModifyRecordListRecordActionsEvent $event
      * @return void
      * @throws RouteNotFoundException
