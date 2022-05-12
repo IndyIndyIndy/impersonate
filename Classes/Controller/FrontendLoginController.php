@@ -12,61 +12,52 @@ namespace ChristianEssl\Impersonate\Controller;
  *
  ***/
 
-use ChristianEssl\Impersonate\Authentication\FrontendUserAuthenticator;
-use ChristianEssl\Impersonate\Exception\NoAdminUserException;
 use ChristianEssl\Impersonate\Exception\NoUserIdException;
 use ChristianEssl\Impersonate\Utility\ConfigurationUtility;
-use ChristianEssl\Impersonate\Utility\PreviewUrlUtility;
+use ChristianEssl\Impersonate\Utility\VerificationUtility;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use TYPO3\CMS\Core\Error\Http\ServiceUnavailableException;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Http\RedirectResponse;
+use TYPO3\CMS\Core\Routing\UnableToLinkToPageException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 
 /**
  * Handles logging in a frontend user with the given uid
  */
 class FrontendLoginController
 {
+
     /**
      * @param ServerRequestInterface $request
      *
      * @return RedirectResponse
      * @throws NoUserIdException
-     * @throws ServiceUnavailableException
-     * @throws NoAdminUserException
+     * @throws UnableToLinkToPageException
      */
     public function loginAction(ServerRequestInterface $request): ResponseInterface
     {
-        $uid = (int) $request->getQueryParams()['uid'];
+        $uid = (int)$request->getQueryParams()['uid'];
 
         if (!empty($uid)) {
-            $this->authenticateFrontendUser($uid);
-            $pageId = ConfigurationUtility::getRedirectPageId();
-            $previewUrl = PreviewUrlUtility::getPreviewUrl($pageId);
+            $additionalGetVars = GeneralUtility::implodeArrayForUrl('tx_impersonate', [
+                'timeout' => $timeout = time() + 60,
+                'user' => $user = (int)$request->getQueryParams()['uid'],
+                'verification' => VerificationUtility::buildVerificationHash($timeout, $user)
+            ]);
+            $pageUid = ConfigurationUtility::getRedirectPageId();
+            $previewUrl = BackendUtility::getPreviewUrl(
+                $pageUid,
+                '',
+                null,
+                '',
+                '',
+                $additionalGetVars
+            );
 
-            if (VersionNumberUtility::convertVersionNumberToInteger(TYPO3_version) >= 9000000) {
-                return new RedirectResponse($previewUrl);
-            } else {
-                header('Location: ' . $previewUrl);
-                exit;
-            }
+            return new RedirectResponse($previewUrl);
         }
 
         throw new NoUserIdException('No user was given.');
     }
-
-    /**
-     * @param integer $uid
-     *
-     * @throws ServiceUnavailableException
-     * @throws NoAdminUserException
-     */
-    protected function authenticateFrontendUser($uid)
-    {
-        $frontendUserAuthenticator = GeneralUtility::makeInstance(FrontendUserAuthenticator::class);
-        $frontendUserAuthenticator->authenticate($uid);
-    }
-
 }

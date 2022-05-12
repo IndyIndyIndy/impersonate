@@ -1,0 +1,14 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    ChristianEssl\Impersonate\:
+        resource: '../Classes/*'
+
+    ChristianEssl\Impersonate\Listener\RecordListRecordActionsListener:
+        tags:
+            -   name: event.listener
+                identifier: 'tx-impersonate-modify-record-list-record-actions'
+                event: TYPO3\CMS\Recordlist\Event\ModifyRecordListRecordActionsEvent
