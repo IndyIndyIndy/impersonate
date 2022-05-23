@@ -15,22 +15,31 @@ namespace ChristianEssl\Impersonate\Utility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
+use TYPO3\CMS\Core\TypoScript\TypoScriptService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Configuration\BackendConfigurationManager;
 
 /**
  * Configuration utility
  */
 class ConfigurationUtility
 {
+
     public static function getRedirectPageId()
     {
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $configurationManager = $objectManager->get( \TYPO3\CMS\Extbase\Configuration\BackendConfigurationManager::class);
-        $configuration = $configurationManager->getConfiguration('impersonate');
+        $configurationManager = GeneralUtility::makeInstance(BackendConfigurationManager::class);
+        $typoScriptService = GeneralUtility::makeInstance(TypoScriptService::class);
 
-        if (self::redirectPageIdExists($configuration)) {
-            return (int)$configuration['settings']['loginRedirectPid'];
+        $typoScriptSetup = $typoScriptService->convertTypoScriptArrayToPlainArray(
+            $configurationManager->getTypoScriptSetup()
+        );
+
+        if (isset($typoScriptSetup['module']['tx_impersonate'])) {
+            $configuration = $typoScriptSetup['module']['tx_impersonate'];
+
+            if (self::redirectPageIdExists($configuration)) {
+                return (int)$configuration['settings']['loginRedirectPid'];
+            }
         }
 
         return self::getRootPageId();
@@ -43,18 +52,16 @@ class ConfigurationUtility
      */
     protected static function redirectPageIdExists($configuration)
     {
-        return isset($configuration['settings']) &&
-            isset($configuration['settings']['loginRedirectPid']) &&
-            $configuration['settings']['loginRedirectPid'] > 0;
+        return isset($configuration['settings']['loginRedirectPid']) && $configuration['settings']['loginRedirectPid'] > 0;
     }
 
     /**
      * @return integer
      */
-    public static function getRootPageId()
+    public static function getRootPageId(): int
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('pages');
+                                      ->getQueryBuilderForTable('pages');
 
         $queryBuilder
             ->getRestrictions()
@@ -70,7 +77,7 @@ class ConfigurationUtility
             )
             ->orderBy('sorting')
             ->execute()
-            ->fetch();
+            ->fetchAssociative();
 
         if (empty($rootPage)) {
             return 0;

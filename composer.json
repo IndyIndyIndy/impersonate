@@ -14,9 +14,9 @@
             "role": "Developer"
         }
     ],
-    "version": "1.1.0",
+    "version": "2.0.0",
     "require": {
-        "typo3/cms-core": "^10.4.0"
+        "typo3/cms-core": "^11.5"
     },
     "autoload": {
         "psr-4": {
@@ -30,5 +30,10 @@
     },
     "replace": {
         "typo3-ter/impersonate": "self.version"
+    },
+    "extra": {
+        "typo3/cms": {
+            "extension-key": "impersonate"
+        }
     }
 }
