@@ -1,9 +1,9 @@
-# https://editorconfig.org/
+# EditorConfig is awesome: http://EditorConfig.org
 
-# This is the top-most .editorconfig file; do not search in parent directories.
+# top-most EditorConfig file
 root = true
 
-# All files.
+# Unix-style newlines with a newline ending every file
 [*]
 charset = utf-8
 end_of_line = lf
@@ -12,11 +12,50 @@ indent_size = 4
 insert_final_newline = true
 trim_trailing_whitespace = true
 
-[*.md]
-trim_trailing_whitespace = false
-
-[*.{csv,ini}]
-insert_final_newline = false
-
-[*.{yml,yaml}]
+# TS/JS-Files
+[*.{ts,js}]
 indent_size = 2
+
+# JSON-Files
+[*.json]
+indent_style = tab
+
+# JSON-Files
+[composer.json]
+indent_style = space
+
+# ReST-Files
+[*.rst]
+indent_size = 3
+
+# MD-Files
+[*.md]
+indent_size = 4
+
+# YAML-Files
+[*.{yaml,yml}]
+indent_size = 2
+
+# package.json
+[package.json]
+indent_size = 2
+
+# TypoScript
+[*.{typoscript,tsconfig}]
+indent_style = tab
+
+# XLF-Files
+[*.xlf]
+indent_style = tab
+
+# SQL-Files
+[*.sql]
+indent_style = tab
+indent_size = 2
+
+# .htaccess
+[{_.htaccess,.htaccess}]
+indent_style = tab
+
+[*.{html,css,scss}]
+indent_style = tab

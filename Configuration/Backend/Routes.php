@@ -1,22 +1,26 @@
 <?php
 
-/***
- *
+/*
  * This file is part of the "Impersonate" Extension for TYPO3 CMS.
+ *
+ * (c) 2019 Christian Eßl <indy.essl@gmail.com>, https://christianessl.at
+ *     2022 Axel Böswetter <boeswetter@portrino.de>, https://www.portrino.de
+ *
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  *
- *  (c) 2019 Christian Eßl <indy.essl@gmail.com>, https://christianessl.at
- *
- ***/
-
-/**
- * Definitions for routes provided by EXT:impersonate
+ * The TYPO3 project - inspiring people to share!
  */
+
+use ChristianEssl\Impersonate\Controller\FrontendLoginController;
+
 return [
     'impersonate_frontendlogin' => [
         'path' => '/impersonate/login',
-        'target' => \ChristianEssl\Impersonate\Controller\FrontendLoginController::class . '::loginAction',
+        'target' => FrontendLoginController::class . '::loginAction',
     ],
 ];

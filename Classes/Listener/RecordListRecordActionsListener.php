@@ -1,18 +1,24 @@
 <?php
 
-namespace ChristianEssl\Impersonate\Listener;
+declare(strict_types=1);
 
-/***
- *
+/*
  * This file is part of the "Impersonate" Extension for TYPO3 CMS.
+ *
+ * (c) 2019 Christian Eßl <indy.essl@gmail.com>, https://christianessl.at
+ *     2022 Axel Böswetter <boeswetter@portrino.de>, https://www.portrino.de
+ *
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  *
- *  (c) 2019 Christian Eßl <indy.essl@gmail.com>, https://christianessl.at
- *      2022 Axel Böswetter <boeswetter@portrino.de>, https://www.portrino.de
- *
- ***/
+ * The TYPO3 project - inspiring people to share!
+ */
+
+namespace ChristianEssl\Impersonate\Listener;
 
 use TYPO3\CMS\Backend\RecordList\Event\ModifyRecordListRecordActionsEvent;
 use TYPO3\CMS\Backend\Routing\Exception\RouteNotFoundException;
@@ -70,8 +76,6 @@ class RecordListRecordActionsListener
     }
 
     /**
-     * @param int $userId
-     * @return string
      * @throws RouteNotFoundException
      */
     protected function buildFrontendLoginUri(int $userId): string
@@ -80,11 +84,6 @@ class RecordListRecordActionsListener
         return (string)$uriBuilder->buildUriFromRoute('impersonate_frontendlogin', ['uid' => $userId]);
     }
 
-    /**
-     * @param string $key
-     *
-     * @return string
-     */
     protected function translate(string $key): string
     {
         return $GLOBALS['LANG']->sL('LLL:EXT:impersonate/Resources/Private/Language/locallang.xlf:' . $key);
