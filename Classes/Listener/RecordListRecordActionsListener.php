@@ -1,4 +1,5 @@
 <?php
+
 namespace ChristianEssl\Impersonate\Listener;
 
 /***
@@ -13,23 +14,21 @@ namespace ChristianEssl\Impersonate\Listener;
  *
  ***/
 
+use TYPO3\CMS\Backend\RecordList\Event\ModifyRecordListRecordActionsEvent;
 use TYPO3\CMS\Backend\Routing\Exception\RouteNotFoundException;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Recordlist\Event\ModifyRecordListRecordActionsEvent;
 
 /**
  * Event listener for DatabaseRecordList, implementing the icons for impersonating a frontend user
  */
 class RecordListRecordActionsListener
 {
-
     /**
      * @param ModifyRecordListRecordActionsEvent $event
-     * @return void
      * @throws RouteNotFoundException
      */
     public function __invoke(ModifyRecordListRecordActionsEvent $event): void
@@ -41,8 +40,9 @@ class RecordListRecordActionsListener
             $event->setAction(
                 $this->addImpersonateButton($event->getRecord()),
                 'impersonate',
-                'secondary',
-                'divider'
+                'primary',
+                '',
+                'delete'
             );
         }
     }

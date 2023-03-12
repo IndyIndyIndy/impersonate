@@ -12,11 +12,27 @@
         {
             "name": "Christian Essl",
             "role": "Developer"
+        },
+        {
+            "name": "Axel Böswetter",
+            "role": "Developer"
         }
     ],
-    "version": "2.0.0",
+    "config": {
+        "allow-plugins": {
+            "typo3/class-alias-loader": true,
+            "typo3/cms-composer-installers": true
+        },
+        "bin-dir": ".Build/bin",
+        "vendor-dir": ".Build/vendor"
+    },
     "require": {
-        "typo3/cms-core": "^11.5"
+        "typo3/cms-core": "12.*.*@dev"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.14",
+        "phpstan/phpstan": "^1.10",
+        "typo3/coding-standards": "^0.7"
     },
     "autoload": {
         "psr-4": {
@@ -33,6 +49,9 @@
     },
     "extra": {
         "typo3/cms": {
+            "app-dir": ".Build",
+            "web-dir": ".Build/Web",
+            "cms-package-dir": "{$vendor-dir}/typo3/cms",
             "extension-key": "impersonate"
         }
     }

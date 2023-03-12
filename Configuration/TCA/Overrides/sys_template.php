@@ -1,8 +1,8 @@
 <?php
+
 defined('TYPO3') || die();
 
 (function () {
-
     $extensionKey = 'impersonate';
 
     \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile(
@@ -10,5 +10,4 @@ defined('TYPO3') || die();
         'Configuration/TypoScript',
         'Impersonate'
     );
-
 })();

@@ -1,4 +1,5 @@
 <?php
+
 namespace ChristianEssl\Impersonate\Controller;
 
 /***
@@ -15,12 +16,11 @@ namespace ChristianEssl\Impersonate\Controller;
 use ChristianEssl\Impersonate\Exception\NoUserIdException;
 use ChristianEssl\Impersonate\Utility\ConfigurationUtility;
 use ChristianEssl\Impersonate\Utility\VerificationUtility;
+use Doctrine\DBAL\Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Backend\Routing\PreviewUriBuilder;
 use TYPO3\CMS\Core\Http\RedirectResponse;
-use TYPO3\CMS\Core\Routing\UnableToLinkToPageException;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Handles logging in a frontend user with the given uid
@@ -33,27 +33,27 @@ class FrontendLoginController
      *
      * @return RedirectResponse
      * @throws NoUserIdException
-     * @throws UnableToLinkToPageException
+     * @throws Exception
      */
     public function loginAction(ServerRequestInterface $request): ResponseInterface
     {
         $uid = (int)$request->getQueryParams()['uid'];
 
         if (!empty($uid)) {
-            $additionalGetVars = GeneralUtility::implodeArrayForUrl('tx_impersonate', [
-                'timeout' => $timeout = time() + 60,
-                'user' => $user = (int)$request->getQueryParams()['uid'],
-                'verification' => VerificationUtility::buildVerificationHash($timeout, $user)
-            ]);
             $pageUid = ConfigurationUtility::getRedirectPageId();
-            $previewUrl = BackendUtility::getPreviewUrl(
-                $pageUid,
-                '',
-                null,
-                '',
-                '',
-                $additionalGetVars
-            );
+            $additionalGetVars = [
+                'tx_impersonate' => [
+                    'timeout' => $timeout = time() + 60,
+                    'user' => $user = (int)$request->getQueryParams()['uid'],
+                    'verification' => VerificationUtility::buildVerificationHash(
+                        $timeout,
+                        $user
+                    ),
+                ],
+            ];
+            $previewUrl = (string)PreviewUriBuilder::create($pageUid)
+                                                   ->withAdditionalQueryParameters($additionalGetVars)
+                                                   ->buildUri();
 
             return new RedirectResponse($previewUrl);
         }

@@ -1,4 +1,5 @@
 <?php
+
 namespace ChristianEssl\Impersonate\Utility;
 
 /***
@@ -12,6 +13,7 @@ namespace ChristianEssl\Impersonate\Utility;
  *
  ***/
 
+use Doctrine\DBAL\Exception;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
@@ -24,8 +26,11 @@ use TYPO3\CMS\Extbase\Configuration\BackendConfigurationManager;
  */
 class ConfigurationUtility
 {
-
-    public static function getRedirectPageId()
+    /**
+     * @return int
+     * @throws Exception
+     */
+    public static function getRedirectPageId(): int
     {
         $configurationManager = GeneralUtility::makeInstance(BackendConfigurationManager::class);
         $typoScriptService = GeneralUtility::makeInstance(TypoScriptService::class);
@@ -50,13 +55,14 @@ class ConfigurationUtility
      *
      * @return bool
      */
-    protected static function redirectPageIdExists($configuration)
+    protected static function redirectPageIdExists($configuration): bool
     {
         return isset($configuration['settings']['loginRedirectPid']) && $configuration['settings']['loginRedirectPid'] > 0;
     }
 
     /**
-     * @return integer
+     * @return int
+     * @throws Exception
      */
     public static function getRootPageId(): int
     {
@@ -76,11 +82,12 @@ class ConfigurationUtility
                 $queryBuilder->expr()->eq('is_siteroot', $queryBuilder->createNamedParameter(1, \PDO::PARAM_INT))
             )
             ->orderBy('sorting')
-            ->execute()
+            ->executeQuery()
             ->fetchAssociative();
 
         if (empty($rootPage)) {
-            return 0;
+            // Early validation of root page - it must always be given
+            throw new \RuntimeException('No root page defined/ found', 1678628605);
         }
 
         return (int)$rootPage['uid'];

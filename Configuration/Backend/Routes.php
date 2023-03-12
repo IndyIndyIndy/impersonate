@@ -17,6 +17,6 @@
 return [
     'impersonate_frontendlogin' => [
         'path' => '/impersonate/login',
-        'target' => \ChristianEssl\Impersonate\Controller\FrontendLoginController::class . '::loginAction'
-    ]
+        'target' => \ChristianEssl\Impersonate\Controller\FrontendLoginController::class . '::loginAction',
+    ],
 ];

@@ -1,15 +1,20 @@
 <?php
+
 namespace ChristianEssl\Impersonate\Authentication;
 
 use ChristianEssl\Impersonate\Utility\VerificationUtility;
+use Doctrine\DBAL\Exception;
 use TYPO3\CMS\Core\Authentication\AuthenticationService;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class AuthService extends AuthenticationService
 {
-
-    public function getUser()
+    /**
+     * @return array<string, mixed>|false User array or FALSE
+     * @throws Exception
+     */
+    public function getUser(): array|bool
     {
         $uid = (int)GeneralUtility::_GET('tx_impersonate')['user'];
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
@@ -22,7 +27,7 @@ class AuthService extends AuthenticationService
                 $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
             ));
 
-        return $queryBuilder->execute()->fetchAssociative();
+        return $queryBuilder->executeQuery()->fetchAssociative();
     }
 
     /**
