@@ -27,7 +27,6 @@ use TYPO3\CMS\Core\Http\RedirectResponse;
  */
 class FrontendLoginController
 {
-
     /**
      * @param ServerRequestInterface $request
      *
