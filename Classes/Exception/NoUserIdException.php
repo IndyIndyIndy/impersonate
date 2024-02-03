@@ -13,4 +13,6 @@ namespace ChristianEssl\Impersonate\Exception;
  *
  ***/
 
-class NoUserIdException extends \Exception {}
+class NoUserIdException extends \Exception
+{
+}

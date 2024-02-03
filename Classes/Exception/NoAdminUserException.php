@@ -13,4 +13,6 @@ namespace ChristianEssl\Impersonate\Exception;
  *
  ***/
 
-class NoAdminUserException extends \Exception {}
+class NoAdminUserException extends \Exception
+{
+}
