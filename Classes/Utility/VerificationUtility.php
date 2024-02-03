@@ -1,4 +1,5 @@
 <?php
+
 namespace ChristianEssl\Impersonate\Utility;
 
 /***
@@ -17,7 +18,6 @@ use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 
 class VerificationUtility
 {
-
     /**
      * @param int $timeout
      * @param int $user
@@ -37,18 +37,18 @@ class VerificationUtility
     }
 
     /**
-     * @param array $impersonateData
+     * @param array<string, mixed> $impersonateData
      * @return bool
      */
     public static function verifyImpersonateData(array $impersonateData): bool
     {
         if ($GLOBALS['BE_USER'] instanceof BackendUserAuthentication && $GLOBALS['BE_USER']->isAdmin()) {
             return $impersonateData['verification'] === md5(
-                    $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'] .
-                    $GLOBALS['BE_USER']->getSession()->getIdentifier() .
-                    $impersonateData['timeout'] .
-                    $impersonateData['user']
-                );
+                $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'] .
+                $GLOBALS['BE_USER']->getSession()->getIdentifier() .
+                $impersonateData['timeout'] .
+                $impersonateData['user']
+            );
         }
         return false;
     }

@@ -1,4 +1,5 @@
 <?php
+
 namespace ChristianEssl\Impersonate\Middleware;
 
 /***
@@ -25,10 +26,8 @@ use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
  */
 class FrontendUserAuthenticator implements MiddlewareInterface
 {
-
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-
         $impersonateData = $request->getQueryParams()['tx_impersonate'] ?? [];
         if (isset($impersonateData['timeout'], $impersonateData['user'], $impersonateData['verification'])
             && $impersonateData['timeout'] > time()
@@ -53,8 +52,8 @@ class FrontendUserAuthenticator implements MiddlewareInterface
 
             $GLOBALS['TYPO3_CONF_VARS']['SVCONF']['auth'] = [
                 'setup' => [
-                    'FE_alwaysFetchUser' => true
-                ]
+                    'FE_alwaysFetchUser' => true,
+                ],
             ];
         }
 

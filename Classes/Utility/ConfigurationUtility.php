@@ -1,4 +1,5 @@
 <?php
+
 namespace ChristianEssl\Impersonate\Utility;
 
 /***
@@ -24,10 +25,11 @@ use TYPO3\CMS\Extbase\Configuration\BackendConfigurationManager;
  */
 class ConfigurationUtility
 {
-
-    public static function getRedirectPageId()
+    public static function getRedirectPageId(): int
     {
+        /** @var BackendConfigurationManager $configurationManager */
         $configurationManager = GeneralUtility::makeInstance(BackendConfigurationManager::class);
+        /** @var TypoScriptService $typoScriptService */
         $typoScriptService = GeneralUtility::makeInstance(TypoScriptService::class);
 
         $typoScriptSetup = $typoScriptService->convertTypoScriptArrayToPlainArray(
@@ -46,28 +48,29 @@ class ConfigurationUtility
     }
 
     /**
-     * @param array $configuration
+     * @param array<string, mixed> $configuration
      *
      * @return bool
      */
-    protected static function redirectPageIdExists($configuration)
+    protected static function redirectPageIdExists(array $configuration): bool
     {
         return isset($configuration['settings']['loginRedirectPid']) && $configuration['settings']['loginRedirectPid'] > 0;
     }
 
     /**
-     * @return integer
+     * @return int
      */
     public static function getRootPageId(): int
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                                      ->getQueryBuilderForTable('pages');
+        /** @var ConnectionPool $connectionPool */
+        $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
+        $queryBuilder = $connectionPool->getQueryBuilderForTable('pages');
 
         $queryBuilder
             ->getRestrictions()
             ->removeAll()
-            ->add(GeneralUtility::makeInstance(DeletedRestriction::class))
-            ->add(GeneralUtility::makeInstance(HiddenRestriction::class));
+            ->add(GeneralUtility::makeInstance(DeletedRestriction::class))  // @phpstan-ignore-line
+            ->add(GeneralUtility::makeInstance(HiddenRestriction::class));  // @phpstan-ignore-line
 
         $rootPage = $queryBuilder
             ->select('uid')
@@ -76,7 +79,7 @@ class ConfigurationUtility
                 $queryBuilder->expr()->eq('is_siteroot', $queryBuilder->createNamedParameter(1, \PDO::PARAM_INT))
             )
             ->orderBy('sorting')
-            ->execute()
+            ->executeQuery()
             ->fetchAssociative();
 
         if (empty($rootPage)) {

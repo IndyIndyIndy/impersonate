@@ -1,4 +1,5 @@
 <?php
+
 namespace ChristianEssl\Impersonate\Authentication;
 
 use ChristianEssl\Impersonate\Utility\VerificationUtility;
@@ -8,12 +9,12 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class AuthService extends AuthenticationService
 {
-
     public function getUser()
     {
         $uid = (int)GeneralUtility::_GET('tx_impersonate')['user'];
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                                      ->getQueryBuilderForTable('fe_users');
+        /** @var ConnectionPool $connectionPool */
+        $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
+        $queryBuilder = $connectionPool->getQueryBuilderForTable('fe_users');
         $queryBuilder
             ->select('*')
             ->from('fe_users')
@@ -22,7 +23,7 @@ class AuthService extends AuthenticationService
                 $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
             ));
 
-        return $queryBuilder->execute()->fetchAssociative();
+        return $queryBuilder->executeQuery()->fetchAssociative();
     }
 
     /**
@@ -34,7 +35,7 @@ class AuthService extends AuthenticationService
      *  > 0:    User authenticated successfully. Other auth services will still be asked.
      *  <= 0:   Authentication failed, no more checking needed by other auth services.
      *
-     * @param array $user
+     * @param array<string, mixed> $user
      * @return int
      */
     public function authUser(array $user): int

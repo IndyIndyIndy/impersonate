@@ -1,4 +1,5 @@
 <?php
+
 namespace ChristianEssl\Impersonate\Listener;
 
 /***
@@ -26,10 +27,8 @@ use TYPO3\CMS\Recordlist\Event\ModifyRecordListRecordActionsEvent;
  */
 class RecordListRecordActionsListener
 {
-
     /**
      * @param ModifyRecordListRecordActionsEvent $event
-     * @return void
      * @throws RouteNotFoundException
      */
     public function __invoke(ModifyRecordListRecordActionsEvent $event): void
@@ -48,7 +47,7 @@ class RecordListRecordActionsListener
     }
 
     /**
-     * @param array $userRow
+     * @param array<string, mixed> $userRow
      * @return string
      * @throws RouteNotFoundException
      */
@@ -58,6 +57,7 @@ class RecordListRecordActionsListener
         $uri = $this->buildFrontendLoginUri($userId);
 
         $buttonText = $this->translate('button.impersonate');
+        /** @var IconFactory $iconFactory */
         $iconFactory = GeneralUtility::makeInstance(IconFactory::class);
         $iconMarkup = $iconFactory->getIcon('actions-system-backend-user-switch', Icon::SIZE_SMALL)->render();
 
@@ -76,6 +76,7 @@ class RecordListRecordActionsListener
      */
     protected function buildFrontendLoginUri(int $userId): string
     {
+        /** @var UriBuilder $uriBuilder */
         $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
         return (string)$uriBuilder->buildUriFromRoute('impersonate_frontendlogin', ['uid' => $userId]);
     }

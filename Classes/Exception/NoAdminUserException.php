@@ -1,4 +1,5 @@
 <?php
+
 namespace ChristianEssl\Impersonate\Exception;
 
 /***
@@ -12,7 +13,4 @@ namespace ChristianEssl\Impersonate\Exception;
  *
  ***/
 
-class NoAdminUserException extends \Exception
-{
-
-}
+class NoAdminUserException extends \Exception {}

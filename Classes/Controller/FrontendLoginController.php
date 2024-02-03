@@ -1,4 +1,5 @@
 <?php
+
 namespace ChristianEssl\Impersonate\Controller;
 
 /***
@@ -27,7 +28,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class FrontendLoginController
 {
-
     /**
      * @param ServerRequestInterface $request
      *
@@ -43,7 +43,7 @@ class FrontendLoginController
             $additionalGetVars = GeneralUtility::implodeArrayForUrl('tx_impersonate', [
                 'timeout' => $timeout = time() + 60,
                 'user' => $user = (int)$request->getQueryParams()['uid'],
-                'verification' => VerificationUtility::buildVerificationHash($timeout, $user)
+                'verification' => VerificationUtility::buildVerificationHash($timeout, $user),
             ]);
             $pageUid = ConfigurationUtility::getRedirectPageId();
             $previewUrl = BackendUtility::getPreviewUrl(
