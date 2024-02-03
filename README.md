@@ -26,7 +26,7 @@ tech support actions while impersonating the specified user account.
 
 | Impersonate | TYPO3     | PHP       | Support / Development                |
 |-------------|-----------|-----------|--------------------------------------|
-| 2.0.x       | 11.5      | 7.4 - 8.3 | features, bugfixes, security updates |
+| 2.x         | 11.5      | 7.4 - 8.3 | features, bugfixes, security updates |
 | 1.1.x       | 10.4      | 7.0 - 7.4 | bugfixes, security updates           |
 | 1.0.x       | 8.7 - 9.5 | 7.0 - 7.4 | none                                 |
 
