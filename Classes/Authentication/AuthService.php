@@ -39,7 +39,7 @@ class AuthService extends AuthenticationService
      *  > 0:    User authenticated successfully. Other auth services will still be asked.
      *  <= 0:   Authentication failed, no more checking needed by other auth services.
      *
-     * @param array $user
+     * @param array<string, mixed> $user
      * @return int
      */
     public function authUser(array $user): int

@@ -37,7 +37,7 @@ class VerificationUtility
     }
 
     /**
-     * @param array $impersonateData
+     * @param array<string, mixed> $impersonateData
      * @return bool
      */
     public static function verifyImpersonateData(array $impersonateData): bool

@@ -48,7 +48,7 @@ class RecordListRecordActionsListener
     }
 
     /**
-     * @param array $userRow
+     * @param array<string, mixed> $userRow
      * @return string
      * @throws RouteNotFoundException
      */
