@@ -14,7 +14,7 @@ namespace ChristianEssl\Impersonate\Controller;
  ***/
 
 use ChristianEssl\Impersonate\Exception\NoUserIdException;
-use ChristianEssl\Impersonate\Utility\ConfigurationUtility;
+use ChristianEssl\Impersonate\Service\ConfigurationService;
 use ChristianEssl\Impersonate\Utility\VerificationUtility;
 use Doctrine\DBAL\Exception;
 use Psr\Http\Message\ResponseInterface;
@@ -27,6 +27,8 @@ use TYPO3\CMS\Core\Http\RedirectResponse;
  */
 class FrontendLoginController
 {
+    public function __construct(protected readonly ConfigurationService $configurationService) {}
+
     /**
      * @param ServerRequestInterface $request
      *
@@ -36,17 +38,17 @@ class FrontendLoginController
      */
     public function loginAction(ServerRequestInterface $request): ResponseInterface
     {
-        $uid = (int)$request->getQueryParams()['uid'];
+        $userUid = (int)$request->getQueryParams()['uid'];
 
-        if (!empty($uid)) {
-            $pageUid = ConfigurationUtility::getRedirectPageId();
+        if ($userUid > 0) {
+            $pageUid = $this->configurationService->getRedirectPageId();
             $additionalGetVars = [
                 'tx_impersonate' => [
                     'timeout' => $timeout = time() + 60,
-                    'user' => $user = (int)$request->getQueryParams()['uid'],
+                    'user' => $userUid,
                     'verification' => VerificationUtility::buildVerificationHash(
                         $timeout,
-                        $user
+                        $userUid
                     ),
                 ],
             ];
@@ -57,6 +59,6 @@ class FrontendLoginController
             return new RedirectResponse($previewUrl);
         }
 
-        throw new NoUserIdException('No user was given.');
+        throw new NoUserIdException('No user was given.', 1738245688);
     }
 }

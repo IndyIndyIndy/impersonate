@@ -18,8 +18,8 @@ use TYPO3\CMS\Backend\RecordList\Event\ModifyRecordListRecordActionsEvent;
 use TYPO3\CMS\Backend\Routing\Exception\RouteNotFoundException;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
-use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Imaging\IconFactory;
+use TYPO3\CMS\Core\Imaging\IconSize;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -59,7 +59,7 @@ class RecordListRecordActionsListener
 
         $buttonText = $this->translate('button.impersonate');
         $iconFactory = GeneralUtility::makeInstance(IconFactory::class);
-        $iconMarkup = $iconFactory->getIcon('actions-system-backend-user-switch', Icon::SIZE_SMALL)->render();
+        $iconMarkup = $iconFactory->getIcon('actions-system-backend-user-switch', IconSize::SMALL)->render();
 
         return '
             <a class="btn btn-default t3-impersonate-button"

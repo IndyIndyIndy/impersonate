@@ -1,6 +1,6 @@
 <?php
 
-namespace ChristianEssl\Impersonate\Utility;
+namespace ChristianEssl\Impersonate\Service;
 
 /***
  *
@@ -14,6 +14,8 @@ namespace ChristianEssl\Impersonate\Utility;
  ***/
 
 use Doctrine\DBAL\Exception;
+use Psr\Http\Message\ServerRequestInterface;
+use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
@@ -24,30 +26,32 @@ use TYPO3\CMS\Extbase\Configuration\BackendConfigurationManager;
 /**
  * Configuration utility
  */
-class ConfigurationUtility
+class ConfigurationService
 {
+    public function __construct(
+        protected readonly BackendConfigurationManager $configurationManager,
+        protected readonly TypoScriptService $typoScriptService
+    ) {}
+
     /**
      * @return int
      * @throws Exception
      */
-    public static function getRedirectPageId(): int
+    public function getRedirectPageId(): int
     {
-        $configurationManager = GeneralUtility::makeInstance(BackendConfigurationManager::class);
-        $typoScriptService = GeneralUtility::makeInstance(TypoScriptService::class);
-
-        $typoScriptSetup = $typoScriptService->convertTypoScriptArrayToPlainArray(
-            $configurationManager->getTypoScriptSetup()
+        $typoScriptSetup = $this->typoScriptService->convertTypoScriptArrayToPlainArray(
+            $this->configurationManager->getTypoScriptSetup($this->getRequest())
         );
 
         if (isset($typoScriptSetup['module']['tx_impersonate'])) {
             $configuration = $typoScriptSetup['module']['tx_impersonate'];
 
-            if (self::redirectPageIdExists($configuration)) {
+            if ($this->redirectPageIdExists($configuration)) {
                 return (int)$configuration['settings']['loginRedirectPid'];
             }
         }
 
-        return self::getRootPageId();
+        return $this->getRootPageId();
     }
 
     /**
@@ -55,7 +59,7 @@ class ConfigurationUtility
      *
      * @return bool
      */
-    protected static function redirectPageIdExists($configuration): bool
+    protected function redirectPageIdExists(array $configuration): bool
     {
         return isset($configuration['settings']['loginRedirectPid']) && $configuration['settings']['loginRedirectPid'] > 0;
     }
@@ -64,10 +68,10 @@ class ConfigurationUtility
      * @return int
      * @throws Exception
      */
-    public static function getRootPageId(): int
+    public function getRootPageId(): int
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                                      ->getQueryBuilderForTable('pages');
+        $queryBuilder = (GeneralUtility::makeInstance(ConnectionPool::class))
+                                       ->getQueryBuilderForTable('pages');
 
         $queryBuilder
             ->getRestrictions()
@@ -79,17 +83,22 @@ class ConfigurationUtility
             ->select('uid')
             ->from('pages')
             ->where(
-                $queryBuilder->expr()->eq('is_siteroot', $queryBuilder->createNamedParameter(1, \PDO::PARAM_INT))
+                $queryBuilder->expr()->eq('is_siteroot', $queryBuilder->createNamedParameter(1, Connection::PARAM_INT))
             )
             ->orderBy('sorting')
             ->executeQuery()
             ->fetchAssociative();
 
-        if (empty($rootPage)) {
+        if (!is_array($rootPage)) {
             // Early validation of root page - it must always be given
             throw new \RuntimeException('No root page defined/ found', 1678628605);
         }
 
         return (int)$rootPage['uid'];
+    }
+
+    private function getRequest(): ServerRequestInterface
+    {
+        return $GLOBALS['TYPO3_REQUEST'];
     }
 }

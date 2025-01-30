@@ -19,17 +19,22 @@
     ],
     "homepage": "https://christianessl.at",
     "require": {
-        "typo3/cms-backend": "^12.4",
-        "typo3/cms-extbase": "^12.4"
+        "typo3/cms-backend": "^13.4",
+        "typo3/cms-extbase": "^13.4"
     },
     "require-dev": {
         "ergebnis/composer-normalize": "^2.30",
         "friendsofphp/php-cs-fixer": "^3.14",
         "helmich/typo3-typoscript-lint": "^3.1",
-        "php-coveralls/php-coveralls": "^2.5",
-        "phpstan/phpstan": "^1.10",
+        "phpstan/phpstan": "^2.0",
+        "phpstan/phpstan-deprecation-rules": "^2.0",
+        "phpstan/phpstan-strict-rules": "^2.0",
         "seld/jsonlint": "^1.9",
-        "typo3/coding-standards": "^0.7"
+        "spaze/phpstan-disallowed-calls": "^4.0",
+        "ssch/typo3-rector": "^3.0",
+        "tomasvotruba/cognitive-complexity": "^1.0",
+        "tomasvotruba/type-coverage": "^2.0",
+        "typo3/coding-standards": "^0.8"
     },
     "replace": {
         "typo3-ter/impersonate": "self.version"

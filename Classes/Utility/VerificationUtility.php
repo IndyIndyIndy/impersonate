@@ -26,7 +26,8 @@ class VerificationUtility
     public static function buildVerificationHash(int $timeout, int $user): string
     {
         if ($GLOBALS['BE_USER'] instanceof BackendUserAuthentication && $GLOBALS['BE_USER']->isAdmin()) {
-            return md5(
+            return hash(
+                'sha256',
                 $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'] .
                 $GLOBALS['BE_USER']->getSession()->getIdentifier() .
                 $timeout .
@@ -43,7 +44,8 @@ class VerificationUtility
     public static function verifyImpersonateData(array $impersonateData): bool
     {
         if ($GLOBALS['BE_USER'] instanceof BackendUserAuthentication && $GLOBALS['BE_USER']->isAdmin()) {
-            return $impersonateData['verification'] === md5(
+            return $impersonateData['verification'] === hash(
+                'sha256',
                 $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'] .
                 $GLOBALS['BE_USER']->getSession()->getIdentifier() .
                 $impersonateData['timeout'] .

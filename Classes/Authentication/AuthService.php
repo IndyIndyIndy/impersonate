@@ -4,8 +4,11 @@ namespace ChristianEssl\Impersonate\Authentication;
 
 use ChristianEssl\Impersonate\Utility\VerificationUtility;
 use Doctrine\DBAL\Exception;
+use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Authentication\AuthenticationService;
+use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Http\ServerRequestFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class AuthService extends AuthenticationService
@@ -16,15 +19,15 @@ class AuthService extends AuthenticationService
      */
     public function getUser(): array|bool
     {
-        $uid = (int)GeneralUtility::_GET('tx_impersonate')['user'];
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                                      ->getQueryBuilderForTable('fe_users');
+        $uid = (int)$this->getRequest()->getQueryParams()['tx_impersonate']['user'];
+        $queryBuilder = (GeneralUtility::makeInstance(ConnectionPool::class))
+                                       ->getQueryBuilderForTable('fe_users');
         $queryBuilder
             ->select('*')
             ->from('fe_users')
             ->where($queryBuilder->expr()->eq(
                 'uid',
-                $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
+                $queryBuilder->createNamedParameter($uid, Connection::PARAM_INT)
             ));
 
         return $queryBuilder->executeQuery()->fetchAssociative();
@@ -45,9 +48,14 @@ class AuthService extends AuthenticationService
     public function authUser(array $user): int
     {
         $result = 100;
-        if (VerificationUtility::verifyImpersonateData(GeneralUtility::_GET('tx_impersonate'))) {
+        if (VerificationUtility::verifyImpersonateData($this->getRequest()->getQueryParams()['tx_impersonate'])) {
             $result = 200;
         }
         return $result;
+    }
+
+    private function getRequest(): ServerRequestInterface
+    {
+        return ServerRequestFactory::fromGlobals();
     }
 }
