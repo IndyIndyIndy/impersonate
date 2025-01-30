@@ -30,6 +30,7 @@ class ConfigurationService
 {
     public function __construct(
         protected readonly BackendConfigurationManager $configurationManager,
+        protected readonly ConnectionPool $connectionPool,
         protected readonly TypoScriptService $typoScriptService
     ) {}
 
@@ -70,8 +71,7 @@ class ConfigurationService
      */
     public function getRootPageId(): int
     {
-        $queryBuilder = (GeneralUtility::makeInstance(ConnectionPool::class))
-                                       ->getQueryBuilderForTable('pages');
+        $queryBuilder = $this->connectionPool->getQueryBuilderForTable('pages');
 
         $queryBuilder
             ->getRestrictions()

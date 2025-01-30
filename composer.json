@@ -76,18 +76,17 @@
         "ci:php": [
             "@ci:php:cs-fixer",
             "@ci:php:lint",
-            "@ci:php:sniff",
+            "@ci:php:rector",
             "@ci:php:stan"
         ],
         "ci:php:cs-fixer": "./.Build/bin/php-cs-fixer fix --config ./Build/php-cs-fixer.php -v --dry-run --using-cache no --diff",
         "ci:php:lint": "find .*.php *.php Classes Configuration Tests -name '*.php' -print0 | xargs -r -0 -n 1 -P 4 php -l",
+        "ci:php:rector": "./.Build/bin/rector process --ansi --config ./Build/rector.php --dry-run --no-progress-bar",
         "ci:php:stan": "./.Build/bin/phpstan analyse -c ./Build/phpstan.neon --no-progress",
         "ci:static": [
             "@ci:composer:normalize",
             "@ci:json:lint",
-            "@ci:php:cs-fixer",
-            "@ci:php:lint",
-            "@ci:php:stan",
+            "@ci:php",
             "@ci:ts:lint",
             "@ci:yaml:lint"
         ],
