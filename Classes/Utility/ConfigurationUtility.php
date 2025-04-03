@@ -17,6 +17,7 @@ use Doctrine\DBAL\Exception;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
+use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\TypoScript\TypoScriptService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\BackendConfigurationManager;
@@ -27,12 +28,14 @@ use TYPO3\CMS\Extbase\Configuration\BackendConfigurationManager;
 class ConfigurationUtility
 {
     /**
+     * @param string $siteIdentifier
      * @return int
      * @throws Exception
      */
-    public static function getRedirectPageId(): int
+    public static function getRedirectPageId(string $siteIdentifier): int
     {
         $configurationManager = GeneralUtility::makeInstance(BackendConfigurationManager::class);
+        $siteSettings = GeneralUtility::makeInstance(SiteFinder::class)->getSiteByIdentifier($siteIdentifier)->getSettings()->getAll();
         $typoScriptService = GeneralUtility::makeInstance(TypoScriptService::class);
 
         $typoScriptSetup = $typoScriptService->convertTypoScriptArrayToPlainArray(
@@ -41,6 +44,13 @@ class ConfigurationUtility
 
         if (isset($typoScriptSetup['module']['tx_impersonate'])) {
             $configuration = $typoScriptSetup['module']['tx_impersonate'];
+
+            if (self::redirectPageIdExists($configuration)) {
+                return (int)$configuration['settings']['loginRedirectPid'];
+            }
+        }
+        if (isset($siteSettings['module']['tx_impersonate'])) {
+            $configuration = $siteSettings['module']['tx_impersonate'];
 
             if (self::redirectPageIdExists($configuration)) {
                 return (int)$configuration['settings']['loginRedirectPid'];

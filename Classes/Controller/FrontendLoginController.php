@@ -14,13 +14,14 @@ namespace ChristianEssl\Impersonate\Controller;
  ***/
 
 use ChristianEssl\Impersonate\Exception\NoUserIdException;
-use ChristianEssl\Impersonate\Utility\ConfigurationUtility;
 use ChristianEssl\Impersonate\Utility\VerificationUtility;
 use Doctrine\DBAL\Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Backend\Routing\PreviewUriBuilder;
 use TYPO3\CMS\Core\Http\RedirectResponse;
+use TYPO3\CMS\Core\Site\SiteFinder;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Handles logging in a frontend user with the given uid
@@ -36,17 +37,24 @@ class FrontendLoginController
      */
     public function loginAction(ServerRequestInterface $request): ResponseInterface
     {
-        $uid = (int)$request->getQueryParams()['uid'];
+        $siteIdentifier = (string)$request->getQueryParams()['site'];
+        $userUid = (int)$request->getQueryParams()['user'];
 
-        if (!empty($uid)) {
-            $pageUid = ConfigurationUtility::getRedirectPageId();
+        if ($userUid > 0) {
+            // redirect to site root should always be safe for login purposes -> "login redirect" happens in
+            // RedirectHandler middleware
+            $pageUid = GeneralUtility::makeInstance(SiteFinder::class)
+                                     ->getSiteByIdentifier($siteIdentifier)
+                                     ->getRootPageId();
             $additionalGetVars = [
                 'tx_impersonate' => [
+                    'site' => $siteIdentifier,
                     'timeout' => $timeout = time() + 60,
-                    'user' => $user = (int)$request->getQueryParams()['uid'],
+                    'user' => $userUid,
                     'verification' => VerificationUtility::buildVerificationHash(
                         $timeout,
-                        $user
+                        $siteIdentifier,
+                        $userUid
                     ),
                 ],
             ];
