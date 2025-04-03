@@ -1,5 +1,0 @@
-module.tx_impersonate {
-    settings {
-        loginRedirectPid = {$module.tx_impersonate.settings.loginRedirectPid}
-    }
-}

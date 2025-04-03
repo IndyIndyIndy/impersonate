@@ -1,0 +1,8 @@
+categories:
+  impersonate: ~
+
+settings:
+  tx_impersonate.loginRedirectPid:
+    default: 0
+    type: int
+    category: impersonate

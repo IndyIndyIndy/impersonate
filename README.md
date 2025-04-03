@@ -46,10 +46,11 @@ Open the TYPO3 Extension Manager, search for `impersonate` and install the exten
 
 ## 2. Configuration
 
-- Go to the template module in the backend and include the `Impersonate` template to your main TypoScript template.
-- Now open the Constant Editor, choose `module.tx_impersonate` and set the id of the target page to redirect an admin to
-  when logging in a feuser via the backend:
-    - `module.tx_impersonate.settings.loginRedirectPid = #uid of your target page`
+- Go to the `Site Management/Sites` module in the backend and include the `Impersonate` site set as dependency to your 
+  site configuration.
+- Afterward open the `Site Management/Settings` module and set the id of the target page to redirect an admin to when 
+  impersonating a frontend user via the backend:
+    - `tx_impersonate.loginRedirectPid`
 
 ## 3. Usage
 
