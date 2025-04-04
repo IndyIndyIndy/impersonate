@@ -2,7 +2,7 @@
 
 namespace ChristianEssl\Impersonate\Middleware;
 
-use ChristianEssl\Impersonate\Utility\ConfigurationUtility;
+use ChristianEssl\Impersonate\Service\ConfigurationService;
 use ChristianEssl\Impersonate\Utility\VerificationUtility;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -10,14 +10,15 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Http\RedirectResponse;
-use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
+use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 
 class RedirectHandler implements MiddlewareInterface
 {
     public function __construct(
         protected readonly Context $context,
-        protected readonly UriBuilder $uriBuilder
+        protected readonly ConfigurationService $configurationService,
+        protected readonly SiteFinder $siteFinder
     ) {}
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
@@ -37,14 +38,9 @@ class RedirectHandler implements MiddlewareInterface
             && VerificationUtility::verifyImpersonateData($impersonateData)
         ) {
             $siteIdentifier = (string)$impersonateData['site'];
-            $redirectPageId = ConfigurationUtility::getRedirectPageId($siteIdentifier);
-            if ($redirectPageId > 0 && $this->context->getAspect('frontend.user')->isLoggedIn()) {
-                $redirectUri = $this->uriBuilder->reset()
-                                                 ->setTargetPageUid($redirectPageId)
-                                                 ->setCreateAbsoluteUri(true)
-                                                 ->build();
-
-                return new RedirectResponse($redirectUri, 307);
+            $getRedirectPageUri = $this->configurationService->getRedirectPageUri($siteIdentifier);
+            if ($getRedirectPageUri !== '' && $this->context->getAspect('frontend.user')->isLoggedIn()) {
+                return new RedirectResponse($getRedirectPageUri, 307);
             }
         }
 
