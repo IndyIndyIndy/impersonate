@@ -20,6 +20,7 @@ use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Imaging\IconSize;
+use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -54,8 +55,10 @@ class RecordListRecordActionsListener
      */
     protected function addImpersonateButton(array $userRow): string
     {
-        $userId = $userRow['uid'];
-        $uri = $this->buildFrontendLoginUri($userId);
+        $siteIdentifier = GeneralUtility::makeInstance(SiteFinder::class)->getSiteByPageId($userRow['pid'])->getIdentifier();
+        $userUid = $userRow['uid'];
+
+        $uri = $this->buildFrontendLoginUri($siteIdentifier, $userUid);
 
         $buttonText = $this->translate('button.impersonate');
         $iconFactory = GeneralUtility::makeInstance(IconFactory::class);
@@ -70,14 +73,15 @@ class RecordListRecordActionsListener
     }
 
     /**
-     * @param int $userId
+     * @param string $siteIdentifier
+     * @param int $userUid
      * @return string
      * @throws RouteNotFoundException
      */
-    protected function buildFrontendLoginUri(int $userId): string
+    protected function buildFrontendLoginUri(string $siteIdentifier, int $userUid): string
     {
         $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
-        return (string)$uriBuilder->buildUriFromRoute('impersonate_frontendlogin', ['uid' => $userId]);
+        return (string)$uriBuilder->buildUriFromRoute('impersonate_frontendlogin', ['site' => $siteIdentifier, 'user' => $userUid]);
     }
 
     /**

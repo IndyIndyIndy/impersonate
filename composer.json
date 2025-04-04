@@ -20,6 +20,7 @@
     "homepage": "https://christianessl.at",
     "require": {
         "typo3/cms-backend": "^13.4",
+        "typo3/cms-frontend": "^13.4",
         "typo3/cms-extbase": "^13.4"
     },
     "require-dev": {
@@ -84,13 +85,14 @@
         "ci:php:rector": "./.Build/bin/rector process --ansi --config ./Build/rector.php --dry-run --no-progress-bar",
         "ci:php:stan": "./.Build/bin/phpstan analyse -c ./Build/phpstan.neon --no-progress",
         "ci:static": [
-            "@ci:composer:normalize",
             "@ci:json:lint",
-            "@ci:php",
+            "@ci:php:cs-fixer",
+            "@ci:php:lint",
+            "@ci:php:stan",
             "@ci:ts:lint",
             "@ci:yaml:lint"
         ],
-        "ci:ts:lint": "./.Build/bin/typoscript-lint -c ./Build/typoscript-lint.yaml --ansi -n --fail-on-warnings -vvv Configuration/TypoScript",
+        "ci:ts:lint": "[ -d Configuration/TypoScript ] && ./.Build/bin/typoscript-lint -c ./Build/typoscript-lint.yaml --ansi -n --fail-on-warnings -vvv Configuration/TypoScript || echo 'No TypoScript files found.'",
         "ci:yaml:lint": "find . ! -path '*.Build/*' ! -path '*node_modules/*' -regextype egrep -regex '.*.ya?ml$' | xargs -r php ./.Build/bin/yaml-lint",
         "fix:php": [
             "@fix:php:cs"

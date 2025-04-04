@@ -29,7 +29,7 @@ class FrontendUserAuthenticator implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $impersonateData = $request->getQueryParams()['tx_impersonate'] ?? [];
-        if (isset($impersonateData['timeout'], $impersonateData['user'], $impersonateData['verification'])
+        if (isset($impersonateData['timeout'], $impersonateData['user'], $impersonateData['site'], $impersonateData['verification'])
             && $impersonateData['timeout'] > time()
             && VerificationUtility::verifyImpersonateData($impersonateData)
         ) {

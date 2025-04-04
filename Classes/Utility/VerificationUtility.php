@@ -20,10 +20,11 @@ class VerificationUtility
 {
     /**
      * @param int $timeout
+     * @param string $siteIdentifier
      * @param int $user
      * @return string
      */
-    public static function buildVerificationHash(int $timeout, int $user): string
+    public static function buildVerificationHash(int $timeout, string $siteIdentifier, int $user): string
     {
         if ($GLOBALS['BE_USER'] instanceof BackendUserAuthentication && $GLOBALS['BE_USER']->isAdmin()) {
             return hash(
@@ -31,6 +32,7 @@ class VerificationUtility
                 $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'] .
                 $GLOBALS['BE_USER']->getSession()->getIdentifier() .
                 $timeout .
+                $siteIdentifier .
                 $user
             );
         }
@@ -49,6 +51,7 @@ class VerificationUtility
                 $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'] .
                 $GLOBALS['BE_USER']->getSession()->getIdentifier() .
                 $impersonateData['timeout'] .
+                $impersonateData['site'] .
                 $impersonateData['user']
             );
         }
