@@ -48,7 +48,8 @@ class AuthService extends AuthenticationService
     public function authUser(array $user): int
     {
         $result = 100;
-        if (VerificationUtility::verifyImpersonateData($this->getRequest()->getQueryParams()['tx_impersonate'])) {
+        $impersonateData = $this->getRequest()->getQueryParams()['tx_impersonate'] ?? [];
+        if (VerificationUtility::verifyImpersonateData($impersonateData)) {
             $result = 200;
         }
         return $result;

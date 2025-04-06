@@ -18,6 +18,7 @@ use TYPO3\CMS\Backend\RecordList\Event\ModifyRecordListRecordActionsEvent;
 use TYPO3\CMS\Backend\Routing\Exception\RouteNotFoundException;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
+use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Imaging\IconSize;
 use TYPO3\CMS\Core\Site\SiteFinder;
@@ -52,11 +53,12 @@ class RecordListRecordActionsListener
      * @param array<string, mixed> $userRow
      * @return string
      * @throws RouteNotFoundException
+     * @throws SiteNotFoundException
      */
     protected function addImpersonateButton(array $userRow): string
     {
-        $siteIdentifier = GeneralUtility::makeInstance(SiteFinder::class)->getSiteByPageId($userRow['pid'])->getIdentifier();
-        $userUid = $userRow['uid'];
+        $siteIdentifier = GeneralUtility::makeInstance(SiteFinder::class)->getSiteByPageId((int)$userRow['pid'])->getIdentifier();
+        $userUid = (int)$userRow['uid'];
 
         $uri = $this->buildFrontendLoginUri($siteIdentifier, $userUid);
 

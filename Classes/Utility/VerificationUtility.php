@@ -40,12 +40,17 @@ class VerificationUtility
     }
 
     /**
-     * @param array<string, mixed> $impersonateData
+     * @param array<string, int|string> $impersonateData
      * @return bool
      */
     public static function verifyImpersonateData(array $impersonateData): bool
     {
-        if ($GLOBALS['BE_USER'] instanceof BackendUserAuthentication && $GLOBALS['BE_USER']->isAdmin()) {
+        if (
+            isset($impersonateData['timeout'], $impersonateData['user'], $impersonateData['site'], $impersonateData['verification'])
+            && $impersonateData['timeout'] > time()
+            && $GLOBALS['BE_USER'] instanceof BackendUserAuthentication
+            && $GLOBALS['BE_USER']->isAdmin()
+        ) {
             return $impersonateData['verification'] === hash(
                 'sha256',
                 $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'] .

@@ -33,10 +33,7 @@ class RedirectHandler implements MiddlewareInterface
         }
 
         $impersonateData = $request->getQueryParams()['tx_impersonate'] ?? [];
-        if (isset($impersonateData['timeout'], $impersonateData['user'], $impersonateData['site'], $impersonateData['verification'])
-            && $impersonateData['timeout'] > time()
-            && VerificationUtility::verifyImpersonateData($impersonateData)
-        ) {
+        if (VerificationUtility::verifyImpersonateData($impersonateData)) {
             $siteIdentifier = (string)$impersonateData['site'];
             $getRedirectPageUri = $this->configurationService->getRedirectPageUri($siteIdentifier);
             if ($getRedirectPageUri !== '' && $this->context->getAspect('frontend.user')->isLoggedIn()) {
