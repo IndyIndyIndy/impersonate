@@ -2,7 +2,6 @@
 
 > Impersonate frontend users from inside the TYPO3 Backend.
 
-[![Code Climate](https://codeclimate.com/github/IndyIndyIndy/impersonate.svg)](https://codeclimate.com/github/IndyIndyIndy/impersonate)
 [![TYPO3 13](https://img.shields.io/badge/TYPO3-13-orange.svg)](https://get.typo3.org/version/13)
 [![Latest Stable Version](https://poser.pugx.org/christianessl/impersonate/v/stable)](https://packagist.org/packages/christianessl/impersonate)
 [![Total Downloads](https://poser.pugx.org/christianessl/impersonate/downloads)](https://packagist.org/packages/christianessl/impersonate)
@@ -44,7 +43,7 @@ tech support actions while impersonating the specified user account.
 
 Open the TYPO3 Extension Manager, search for `impersonate` and install the extension.
 
-## 2. Configuration
+## 2. Configuration (optional)
 
 - Go to the `Site Management/Sites` module in the backend and include the `Impersonate` site set as dependency to your 
   site configuration.
