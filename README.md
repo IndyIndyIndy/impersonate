@@ -49,6 +49,14 @@ Open the TYPO3 Extension Manager, search for `impersonate` and install the exten
 - Now open the Constant Editor, choose `module.tx_impersonate` and set the id of the target page to redirect an admin to
   when logging in a feuser via the backend:
     - `module.tx_impersonate.settings.loginRedirectPid = #uid of your target page`
+- For multi-site installations, set the `loginRedirectPid` in your site configuration. Simply add the following lines to
+  the `config/sites/<your-site-identifier>/settings.yaml` of your site configuration:
+  ```yaml
+  module:
+    tx_impersonate:
+      settings:
+        loginRedirectPid: <uid of your target page>
+  ```
 
 ## 3. Usage
 
