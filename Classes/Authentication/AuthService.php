@@ -1,11 +1,32 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * This file is part of the "Impersonate" Extension for TYPO3 CMS.
+ *
+ * (c) 2019 Christian Eßl <indy.essl@gmail.com>, https://christianessl.at
+ *     2022 Axel Böswetter <boeswetter@portrino.de>, https://www.portrino.de
+ *
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
+ *
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ *
+ * The TYPO3 project - inspiring people to share!
+ */
+
 namespace ChristianEssl\Impersonate\Authentication;
 
 use ChristianEssl\Impersonate\Utility\VerificationUtility;
 use Doctrine\DBAL\Exception;
+use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Authentication\AuthenticationService;
+use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Http\ServerRequestFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class AuthService extends AuthenticationService
@@ -16,15 +37,15 @@ class AuthService extends AuthenticationService
      */
     public function getUser(): array|bool
     {
-        $uid = (int)GeneralUtility::_GET('tx_impersonate')['user'];
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                                      ->getQueryBuilderForTable('fe_users');
+        $uid = (int)$this->getRequest()->getQueryParams()['tx_impersonate']['user'];
+        $queryBuilder = (GeneralUtility::makeInstance(ConnectionPool::class))
+                                       ->getQueryBuilderForTable('fe_users');
         $queryBuilder
             ->select('*')
             ->from('fe_users')
             ->where($queryBuilder->expr()->eq(
                 'uid',
-                $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
+                $queryBuilder->createNamedParameter($uid, Connection::PARAM_INT)
             ));
 
         return $queryBuilder->executeQuery()->fetchAssociative();
@@ -45,9 +66,15 @@ class AuthService extends AuthenticationService
     public function authUser(array $user): int
     {
         $result = 100;
-        if (VerificationUtility::verifyImpersonateData(GeneralUtility::_GET('tx_impersonate'))) {
+        $impersonateData = $this->getRequest()->getQueryParams()['tx_impersonate'] ?? [];
+        if (VerificationUtility::verifyImpersonateData($impersonateData)) {
             $result = 200;
         }
         return $result;
+    }
+
+    private function getRequest(): ServerRequestInterface
+    {
+        return ServerRequestFactory::fromGlobals();
     }
 }

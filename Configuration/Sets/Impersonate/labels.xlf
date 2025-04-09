@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+	<file source-language="en" datatype="plaintext" original="EXT:impersonate/Configuration/Sets/Impersonate/labels.xlf" date="2025-03-09T12:30:00Z"
+		  product-name="impersonate">
+		<header/>
+		<body>
+			<trans-unit id="label">
+				<source>Impersonate</source>
+			</trans-unit>
+
+			<trans-unit id="categories.impersonate">
+				<source>Impersonate</source>
+			</trans-unit>
+
+			<trans-unit id="settings.tx_impersonate.loginRedirectPid">
+				<source>Login Redirect Page</source>
+			</trans-unit>
+			<trans-unit id="settings.description.tx_impersonate.loginRedirectPid">
+				<source>Page id to redirect to after logged in as/ impersonating a user</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

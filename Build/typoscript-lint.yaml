@@ -2,12 +2,12 @@ paths:
   - Configuration/TypoScript
 
 sniffs:
+  - class: DeadCode
+  - class: EmptySection
   - class: Indentation
     parameters:
-      useSpaces: false
-      indentPerLevel: 1
-  - class: DeadCode
+      useSpaces: true
+      indentConditions: true
+      indentPerLevel: 4
   - class: RepeatingRValue
-    disabled: true
   - class: NestingConsistency
-    disabled: true

@@ -2,12 +2,10 @@
 
 > Impersonate frontend users from inside the TYPO3 Backend.
 
-[![Code Climate](https://codeclimate.com/github/IndyIndyIndy/impersonate.svg)](https://codeclimate.com/github/IndyIndyIndy/impersonate)
-[![TYPO3 12](https://img.shields.io/badge/TYPO3-12-orange.svg)](https://get.typo3.org/version/12)
+[![TYPO3 13](https://img.shields.io/badge/TYPO3-13-orange.svg)](https://get.typo3.org/version/13)
 [![Latest Stable Version](https://poser.pugx.org/christianessl/impersonate/v/stable)](https://packagist.org/packages/christianessl/impersonate)
 [![Total Downloads](https://poser.pugx.org/christianessl/impersonate/downloads)](https://packagist.org/packages/christianessl/impersonate)
 [![Monthly Downloads](https://poser.pugx.org/christianessl/impersonate/d/monthly)](https://packagist.org/packages/christianessl/impersonate)
-[![Latest Unstable Version](https://poser.pugx.org/christianessl/impersonate/v/unstable)](https://packagist.org/packages/christianessl/impersonate)
 [![License](https://poser.pugx.org/christianessl/impersonate/license)](https://packagist.org/packages/christianessl/impersonate)
 
 ## What does it do?
@@ -26,9 +24,10 @@ tech support actions while impersonating the specified user account.
 
 | Impersonate | TYPO3     | PHP       | Support / Development                |
 |-------------|-----------|-----------|--------------------------------------|
+| 4.x         | 13.4      | 8.2 - 8.4 | features, bugfixes, security updates |
 | 3.x         | 12.4      | 8.1 - 8.3 | features, bugfixes, security updates |
-| 2.x         | 11.5      | 7.4 - 8.3 | features, bugfixes, security updates |
-| 1.1.x       | 10.4      | 7.0 - 7.4 | bugfixes, security updates           |
+| 2.x         | 11.5      | 7.4 - 8.3 | bugfixes, security updates           |
+| 1.1.x       | 10.4      | 7.0 - 7.4 | none                                 |
 | 1.0.x       | 8.7 - 9.5 | 7.0 - 7.4 | none                                 |
 
 ---
@@ -43,20 +42,13 @@ tech support actions while impersonating the specified user account.
 
 Open the TYPO3 Extension Manager, search for `impersonate` and install the extension.
 
-## 2. Configuration
+## 2. Configuration (optional)
 
-- Go to the template module in the backend and include the `Impersonate` template to your main TypoScript template.
-- Now open the Constant Editor, choose `module.tx_impersonate` and set the id of the target page to redirect an admin to
-  when logging in a feuser via the backend:
-    - `module.tx_impersonate.settings.loginRedirectPid = #uid of your target page`
-- For multi-site installations, set the `loginRedirectPid` in your site configuration. Simply add the following lines to
-  the `config/sites/<your-site-identifier>/settings.yaml` of your site configuration:
-  ```yaml
-  module:
-    tx_impersonate:
-      settings:
-        loginRedirectPid: <uid of your target page>
-  ```
+- Go to the `Site Management/Sites` module in the backend and include the `Impersonate` site set as dependency to your 
+  site configuration.
+- Afterward open the `Site Management/Settings` module and set the id of the target page to redirect an admin to when 
+  impersonating a frontend user via the backend:
+    - `tx_impersonate.loginRedirectPid`
 
 ## 3. Usage
 

@@ -1,0 +1,4 @@
+name: christianessl/impersonate
+label: 'Impersonate'
+dependencies:
+  - typo3/felogin

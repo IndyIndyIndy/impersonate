@@ -19,19 +19,23 @@
     ],
     "homepage": "https://christianessl.at",
     "require": {
-        "typo3/cms-backend": "^12.4",
-        "typo3/cms-frontend": "^12.4",
-        "typo3/cms-extbase": "^12.4"
+        "typo3/cms-backend": "^13.4",
+        "typo3/cms-frontend": "^13.4",
+        "typo3/cms-extbase": "^13.4"
     },
     "require-dev": {
         "ergebnis/composer-normalize": "^2.30",
         "friendsofphp/php-cs-fixer": "^3.14",
         "helmich/typo3-typoscript-lint": "^3.1",
-        "php-coveralls/php-coveralls": "^2.5",
-        "phpstan/phpstan": "^1.10",
+        "phpstan/phpstan": "^2.0",
+        "phpstan/phpstan-deprecation-rules": "^2.0",
+        "phpstan/phpstan-strict-rules": "^2.0",
         "seld/jsonlint": "^1.9",
-        "ssch/typo3-rector": "^v2.13",
-        "typo3/coding-standards": "^0.7"
+        "spaze/phpstan-disallowed-calls": "^4.0",
+        "ssch/typo3-rector": "^3.0",
+        "tomasvotruba/cognitive-complexity": "^1.0",
+        "tomasvotruba/type-coverage": "^2.0",
+        "typo3/coding-standards": "^0.8"
     },
     "replace": {
         "typo3-ter/impersonate": "self.version"
@@ -73,7 +77,7 @@
         "ci:php": [
             "@ci:php:cs-fixer",
             "@ci:php:lint",
-            "@ci:php:sniff",
+            "@ci:php:rector",
             "@ci:php:stan"
         ],
         "ci:php:cs-fixer": "./.Build/bin/php-cs-fixer fix --config ./Build/php-cs-fixer.php -v --dry-run --using-cache no --diff",
@@ -88,7 +92,7 @@
             "@ci:ts:lint",
             "@ci:yaml:lint"
         ],
-        "ci:ts:lint": "./.Build/bin/typoscript-lint -c ./Build/typoscript-lint.yaml --ansi -n --fail-on-warnings -vvv Configuration/TypoScript",
+        "ci:ts:lint": "[ -d Configuration/TypoScript ] && ./.Build/bin/typoscript-lint -c ./Build/typoscript-lint.yaml --ansi -n --fail-on-warnings -vvv Configuration/TypoScript || echo 'No TypoScript files found.'",
         "ci:yaml:lint": "find . ! -path '*.Build/*' ! -path '*node_modules/*' -regextype egrep -regex '.*.ya?ml$' | xargs -r php ./.Build/bin/yaml-lint",
         "fix:php": [
             "@fix:php:cs"

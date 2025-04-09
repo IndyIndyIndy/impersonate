@@ -1,25 +1,32 @@
 <?php
 
-namespace ChristianEssl\Impersonate\Listener;
+declare(strict_types=1);
 
-/***
- *
+/*
  * This file is part of the "Impersonate" Extension for TYPO3 CMS.
+ *
+ * (c) 2019 Christian Eßl <indy.essl@gmail.com>, https://christianessl.at
+ *     2022 Axel Böswetter <boeswetter@portrino.de>, https://www.portrino.de
+ *
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  *
- *  (c) 2019 Christian Eßl <indy.essl@gmail.com>, https://christianessl.at
- *      2022 Axel Böswetter <boeswetter@portrino.de>, https://www.portrino.de
- *
- ***/
+ * The TYPO3 project - inspiring people to share!
+ */
+
+namespace ChristianEssl\Impersonate\Listener;
 
 use TYPO3\CMS\Backend\RecordList\Event\ModifyRecordListRecordActionsEvent;
 use TYPO3\CMS\Backend\Routing\Exception\RouteNotFoundException;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
-use TYPO3\CMS\Core\Imaging\Icon;
+use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Imaging\IconFactory;
+use TYPO3\CMS\Core\Imaging\IconSize;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -52,17 +59,18 @@ class RecordListRecordActionsListener
      * @param array<string, mixed> $userRow
      * @return string
      * @throws RouteNotFoundException
+     * @throws SiteNotFoundException
      */
     protected function addImpersonateButton(array $userRow): string
     {
-        $siteIdentifier = GeneralUtility::makeInstance(SiteFinder::class)->getSiteByPageId($userRow['pid'])->getIdentifier();
-        $userUid = $userRow['uid'];
+        $siteIdentifier = GeneralUtility::makeInstance(SiteFinder::class)->getSiteByPageId((int)$userRow['pid'])->getIdentifier();
+        $userUid = (int)$userRow['uid'];
 
         $uri = $this->buildFrontendLoginUri($siteIdentifier, $userUid);
 
         $buttonText = $this->translate('button.impersonate');
         $iconFactory = GeneralUtility::makeInstance(IconFactory::class);
-        $iconMarkup = $iconFactory->getIcon('actions-system-backend-user-switch', Icon::SIZE_SMALL)->render();
+        $iconMarkup = $iconFactory->getIcon('actions-system-backend-user-switch', IconSize::SMALL)->render();
 
         return '
             <a class="btn btn-default t3-impersonate-button"
