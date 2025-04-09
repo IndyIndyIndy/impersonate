@@ -39,6 +39,16 @@ class ConfigurationService
             ) {
                 return $site->getRouter()->generateUri((int)$siteSettings['tx_impersonate']['loginRedirectPid']);
             }
+            if (isset($siteSettings['module']['tx_impersonate']['settings']['loginRedirectPid'])
+                && (int)$siteSettings['module']['tx_impersonate']['settings']['loginRedirectPid'] > 0
+            ) {
+                // @deprecated: Will be removed in v14 compatible version
+                trigger_error(
+                    'Please use new configuration path "tx_impersonate.loginRedirectPid" instead of "module.tx_impersonate.settings.loginRedirectPid".',
+                    E_USER_DEPRECATED
+                );
+                return $site->getRouter()->generateUri((int)$siteSettings['module']['tx_impersonate']['settings']['loginRedirectPid']);
+            }
         } catch (\Exception $e) {
             return '';
         }

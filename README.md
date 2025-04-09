@@ -6,7 +6,6 @@
 [![Latest Stable Version](https://poser.pugx.org/christianessl/impersonate/v/stable)](https://packagist.org/packages/christianessl/impersonate)
 [![Total Downloads](https://poser.pugx.org/christianessl/impersonate/downloads)](https://packagist.org/packages/christianessl/impersonate)
 [![Monthly Downloads](https://poser.pugx.org/christianessl/impersonate/d/monthly)](https://packagist.org/packages/christianessl/impersonate)
-[![Latest Unstable Version](https://poser.pugx.org/christianessl/impersonate/v/unstable)](https://packagist.org/packages/christianessl/impersonate)
 [![License](https://poser.pugx.org/christianessl/impersonate/license)](https://packagist.org/packages/christianessl/impersonate)
 
 ## What does it do?
