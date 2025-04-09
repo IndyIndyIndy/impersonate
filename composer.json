@@ -20,6 +20,7 @@
     "homepage": "https://christianessl.at",
     "require": {
         "typo3/cms-backend": "^12.4",
+        "typo3/cms-frontend": "^12.4",
         "typo3/cms-extbase": "^12.4"
     },
     "require-dev": {
@@ -29,6 +30,7 @@
         "php-coveralls/php-coveralls": "^2.5",
         "phpstan/phpstan": "^1.10",
         "seld/jsonlint": "^1.9",
+        "ssch/typo3-rector": "^v2.13",
         "typo3/coding-standards": "^0.7"
     },
     "replace": {
@@ -76,9 +78,9 @@
         ],
         "ci:php:cs-fixer": "./.Build/bin/php-cs-fixer fix --config ./Build/php-cs-fixer.php -v --dry-run --using-cache no --diff",
         "ci:php:lint": "find .*.php *.php Classes Configuration Tests -name '*.php' -print0 | xargs -r -0 -n 1 -P 4 php -l",
+        "ci:php:rector": "./.Build/bin/rector process --ansi --config ./Build/rector.php --dry-run --no-progress-bar",
         "ci:php:stan": "./.Build/bin/phpstan analyse -c ./Build/phpstan.neon --no-progress",
         "ci:static": [
-            "@ci:composer:normalize",
             "@ci:json:lint",
             "@ci:php:cs-fixer",
             "@ci:php:lint",
